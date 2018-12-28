@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Basic</title>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="embed"></div>
+    <script type="module">
+      import { Framer } from '../dist/index.mjs';
+
+      const framer = new Framer(
+        document.getElementById('embed'),
+        'http://localhost:5000/examples/embed/',
+        { sandbox: 'allow-scripts allow-same-origin' }
+      );
+
+      framer.sendMessage('ad-loader', { hello: 'world' });
+      framer.sendMessage('ad-loader', { bear: 'whales' });
+    </script>
+  </body>
+</html>
