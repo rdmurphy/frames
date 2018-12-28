@@ -102,13 +102,19 @@ Typically using `initFrame()` will be enough, but if you have code that will pot
   - [Examples](#examples-2)
 - [sendHeightOnLoad](#sendheightonload)
   - [Examples](#examples-3)
-- [sendFrameHeight](#sendframeheight)
+- [sendHeightOnPoll](#sendheightonpoll)
   - [Parameters](#parameters-3)
   - [Examples](#examples-4)
-- [createMessageListener](#createmessagelistener)
+- [sendFrameHeight](#sendframeheight)
+  - [Parameters](#parameters-4)
   - [Examples](#examples-5)
-- [initFrame](#initframe)
+- [createMessageListener](#createmessagelistener)
   - [Examples](#examples-6)
+- [initFrame](#initframe)
+  - [Examples](#examples-7)
+- [initFrameThenPoll](#initframethenpoll)
+  - [Parameters](#parameters-5)
+  - [Examples](#examples-8)
 
 ### Framer
 
@@ -200,6 +206,26 @@ sendHeightOnLoad();
 
 Returns **void**
 
+### sendHeightOnPoll
+
+Sends height updates to the parent page on an interval.
+
+#### Parameters
+
+- `delay` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** How long to set the interval (optional, default `500`)
+
+#### Examples
+
+```javascript
+// will call sendFrameHeight every 500ms
+sendHeightOnPoll();
+
+// will call sendFrameHeight every 250ms
+sendHeightOnPoll(250);
+```
+
+Returns **void**
+
 ### sendFrameHeight
 
 Sends the current document's height or provided value to the parent window
@@ -249,6 +275,23 @@ Automatically calls sendFrameHeight, sendHeightOnLoad and sendHeightOnResize.
 
 ```javascript
 initFrame();
+```
+
+Returns **void**
+
+### initFrameThenPoll
+
+Initializes a frame, then sets up a poll to continue to update on an interval.
+
+#### Parameters
+
+- `delay` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** An optional delay to pass to sendHeightOnPoll
+
+#### Examples
+
+```javascript
+// calls initFrame, then calls sendHeightOnPoll
+initFrameThenPoll();
 ```
 
 Returns **void**

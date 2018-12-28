@@ -77,6 +77,23 @@ function sendHeightOnLoad() {
 }
 
 /**
+ * Sends height updates to the parent page on an interval.
+ *
+ * @param {number} [delay] How long to set the interval
+ * @returns {void}
+ * @example
+ *
+ * // will call sendFrameHeight every 500ms
+ * sendHeightOnPoll();
+ *
+ * // will call sendFrameHeight every 250ms
+ * sendHeightOnPoll(250);
+ */
+function sendHeightOnPoll(delay = 500) {
+  setInterval(sendFrameHeight, delay);
+}
+
+/**
  * Sends the current document's height or provided value to the parent window
  * using postMessage.
  *
@@ -141,11 +158,28 @@ function initFrame() {
   sendHeightOnResize();
 }
 
+/**
+ * Initializes a frame, then sets up a poll to continue to update on an interval.
+ *
+ * @param {number} [delay] An optional delay to pass to sendHeightOnPoll
+ * @returns {void}
+ * @example
+ *
+ * // calls initFrame, then calls sendHeightOnPoll
+ * initFrameThenPoll();
+ */
+function initFrameThenPoll(delay) {
+  initFrame();
+  sendHeightOnPoll(delay);
+}
+
 export {
   createMessageListener,
   initFrame,
+  initFrameThenPoll,
   sendFrameHeight,
   sendHeightOnLoad,
+  sendHeightOnPoll,
   sendHeightOnResize,
   sendMessage,
 };
