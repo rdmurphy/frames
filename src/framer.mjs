@@ -1,20 +1,20 @@
+import { getMatchingAttributes } from './utils.mjs';
 import {
   AMP_SENTINEL,
   EMBED_SIZE,
-  FRAME_INITIALIZED_ATTRIBUTE,
+  FRAME_PREFIX,
+  FRAME_AUTO_INITIALIZED_ATTRIBUTE,
   FRAME_SRC_ATTRIBUTE,
 } from './constants.mjs';
 
-const frames = new Set();
-
 /**
- * The Framer object to be called in the parent page.
+ * The Framer object to be called in the host page. Effectively a wrapper around
+ * interactions with an embedded iframe.
  *
  * @param {object} options options used to prepare the iframe
- * @param {Element} options.element the containing DOM element for the iframe
- * @param {string} options.url the URL to set as the `src` of the iframe
+ * @param {Element} options.container the containing DOM element for the iframe
+ * @param {string} options.src the URL to set as the `src` of the iframe
  * @param {boolean} [options.allowfullscreen] toggles the `allowfullscreen` attribute
- * @param {boolean} [options.allowpaymentrequest] toggles the `allowpaymentrequest` attribute
  * @param {string} [options.name] sets the `name` attribute
  * @param {string} [options.referrerpolicy] sets the `referrerpolicy` attribute
  * @param {string} [options.sandbox] sets the `sandbox` attribute
@@ -22,29 +22,40 @@ const frames = new Set();
 class Framer {
   constructor({
     allowfullscreen = false,
-    allowpaymentrequest = false,
-    element,
+    container,
     name,
     referrerpolicy,
     sandbox = 'allow-scripts',
-    url,
+    src,
   }) {
-    this.element = element;
-    this.url = url;
+    this.container = container;
+    this.src = src;
     this.allowfullscreen = allowfullscreen;
-    this.allowpaymentrequest = allowpaymentrequest;
     this.name = name;
     this.referrerpolicy = referrerpolicy;
     this.sandbox = sandbox;
-    this.isLoaded = false;
-    this.queue = [];
 
     this.processMessage_ = this.processMessage_.bind(this);
     window.addEventListener('message', this.processMessage_, false);
 
     this.createIframe_();
+  }
 
-    frames.add(this);
+  /**
+   * Removes event listeners and removes the iframe from the container.
+   *
+   * @returns {void}
+   * @example
+   *
+   * const framer = new Framer(...);
+   * // tears down the Framer
+   * framer.remove();
+   */
+  remove() {
+    window.removeEventListener('message', this.processMessage_, false);
+    this.container.removeChild(this.iframe);
+    // important to de-reference the iframe so it can be GC'ed
+    this.iframe = null;
   }
 
   /**
@@ -55,59 +66,45 @@ class Framer {
    */
   createIframe_() {
     const iframe = (this.iframe = document.createElement('iframe'));
-    const sA = iframe.setAttribute;
 
-    iframe.onload = () => {
-      this.isLoaded = true;
-      const queue = this.queue;
-
-      while (queue.length) {
-        const message = queue.shift();
-        this.sendMessage(message[0], message[1]);
-      }
-    };
-
-    sA('src', this.url);
-    sA('width', '100%');
-    sA('scrolling', 'no');
-    sA('marginheight', '0');
-    sA('frameborder', '0');
-    sA(FRAME_INITIALIZED_ATTRIBUTE, '');
+    iframe.setAttribute('src', this.src);
+    iframe.setAttribute('width', '100%');
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('marginheight', '0');
+    iframe.setAttribute('frameborder', '0');
 
     if (this.allowfullscreen) {
-      sA('allowfullscreen', '');
-    }
-
-    if (this.allowpaymentrequest) {
-      sA('allowpaymentrequest', '');
+      iframe.setAttribute('allowfullscreen', '');
     }
 
     if (this.name) {
-      sA('name', name);
+      iframe.setAttribute('name', name);
     }
 
     if (this.referrerpolicy) {
-      sA('referrerpolicy', this.referrerpolicy);
+      iframe.setAttribute('referrerpolicy', this.referrerpolicy);
     }
 
-    sA('sandbox', this.sandbox);
+    iframe.setAttribute('sandbox', this.sandbox);
 
-    this.element.appendChild(iframe);
+    this.container.appendChild(iframe);
   }
 
   /**
-   * Receives a message from the iframe. Checks to make sure it is only listening
-   * to the iframe it created.
+   * Receives a message from the frame. Checks to make sure it is only listening
+   * to the iframe it created, and that the sentinel value and type matches.
    *
    * @private
    * @param {Event} event
    * @returns {void}
    */
   processMessage_(event) {
+    // this message isn't from our created frame, stop here
     if (event.source !== this.iframe.contentWindow) return;
 
     const { data } = event;
 
+    // if the sentinel and type matches, update our height
     if (data.sentinel === AMP_SENTINEL && data.type === EMBED_SIZE) {
       this.setIframeHeight_(data.height);
     }
@@ -123,51 +120,40 @@ class Framer {
   setIframeHeight_(height) {
     this.iframe.setAttribute('height', height);
   }
-
-  /**
-   * Sends an arbitrary message to the iframe.
-   *
-   * @param {string} type
-   * @param {object} [data]
-   * @example
-   *
-   * framer.sendMessage('send-trigger', { info: 'important' });
-   *
-   * // the frame recieves the following:
-   * // {
-   * //   sentinel: '<value>',
-   * //   type: 'send-trigger',
-   * //   info: 'important',
-   * // }
-   */
-  sendMessage(type, data = {}) {
-    if (!this.isLoaded) {
-      this.queue.push([type, data]);
-    } else {
-      this.iframe.contentWindow.postMessage(
-        {
-          sentinel: SENTINEL,
-          type,
-          ...data,
-        },
-        '*'
-      );
-    }
-  }
 }
 
+/**
+ * Automatically initializes any frames that have not already been
+ * auto-activated.
+ *
+ * @returns {Array} An array of all the created Framers
+ * @example
+ *
+ * // sets up all frames that have not been initialized yet
+ * autoInitFrames();
+ */
 function autoInitFrames() {
-  const matches = document.querySelectorAll(
-    `[${FRAME_SRC_ATTRIBUTE}]:not([${FRAME_INITIALIZED_ATTRIBUTE}])`
+  const elements = document.querySelectorAll(
+    `[${FRAME_SRC_ATTRIBUTE}]:not([${FRAME_AUTO_INITIALIZED_ATTRIBUTE}])`
   );
 
-  for (const element of matches) {
-    new Framer({
-      element,
-      url: element.getAttribute(FRAME_SRC_ATTRIBUTE),
-      sandbox: 'allow-scripts allow-same-origin',
-    });
+  const activated = [];
+
+  for (let i = 0; i < elements.length; i++) {
+    const container = elements[i];
+
+    const attributes = getMatchingAttributes(container, FRAME_PREFIX);
+    container.setAttribute(FRAME_AUTO_INITIALIZED_ATTRIBUTE, '');
+
+    activated.push(
+      new Framer({
+        container,
+        ...attributes,
+      })
+    );
   }
+
+  return activated;
 }
 
-export { autoInitFrames, frames, Framer };
+export { autoInitFrames, Framer };

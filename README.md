@@ -1,30 +1,27 @@
 <h1 align="center">
-  frames (Final name TK - suggestions appreciated!)
-  <a href="https://www.npmjs.org/package/htm"><img src="https://img.shields.io/npm/v/@rdm/frames.svg?style=flat" alt="npm"></a>
+  @wireservice/frames
 </h1>
+<p align="center">
+<a href="https://www.npmjs.org/package/@wireservice/frames"><img src="https://img.shields.io/npm/v/@wireservice/frames.svg?style=flat" alt="npm"></a>
+</p>
 
-> **Important** - This is still in development, and not ready for production work.
-
-`frames` is a [greenfield](https://en.wikipedia.org/wiki/Greenfield_project) take on responsive iframes in the spirit of [Pym.js](http://blog.apps.npr.org/pym.js/).
+`@wireservice/frames` is a [greenfield](https://en.wikipedia.org/wiki/Greenfield_project) take on responsive iframes in the spirit of [Pym.js](http://blog.apps.npr.org/pym.js/).
 
 ## Key features
 
-- 🐜 Less than **1 kilobyte** for both parent and frame code
+- 🐜 **1 kilobyte** gzipped for both parent and frame code
 - 🌴 **Tree-shakable** by default - import only what you need to achieve responsiveness
-- ⚡️ **Speaks [AMP](https://www.ampproject.org)**, compatible with [`amp-iframe`](https://www.ampproject.org/docs/reference/components/amp-iframe)
-- ✉️ Full support for **frame-to-parent/parent-to-frame communication**
+- ⚡️ **Speaks [AMP](https://www.ampproject.org)** and is compatible with [`amp-iframe`](https://www.ampproject.org/docs/reference/components/amp-iframe)
 
 ## Installation
 
-This has not been deployed to `npm` yet - but you can install it directly from GitHub for now.
-
 ```sh
-npm install rdmurphy/frames
+npm install @wireservice/frames
 ```
 
 ## Usage
 
-### From the **embedding** page (_framer_ or _parent_)
+### From the **host** page (_framer_ or _parent_)
 
 The page that contains the embeds needs to use the `Framer` class to set up instances for each embed.
 
@@ -37,52 +34,96 @@ Assume we have the following markup in our HTML:
 Then, in our script:
 
 ```js
-import { Framer } from '@rdm/frames';
+import { Framer } from '@wireservice/frames';
 
-const element = document.getElementById('embed-container');
-const url = 'https://i-am-an-embed/';
+const container = document.getElementById('embed-container');
+const src = 'https://i-am-an-embed/';
 
-const framer = new Framer(element, url);
+const framer = new Framer({ container, src });
 // Now the iframe has been added to the page and is listening for height changes notifications from within the iframe
+```
+
+A popular feature of Pym.js was the ability to automatically initialize embeds that had matching attibutes on their container elements. `@wireservice/frames` also includes this capability.
+
+Assume we have the following markup in our HTML:
+
+```html
+<div data-frame-src="https://i-am-an-embed/"></div>
+<div data-frame-src="https://i-am-an-embed-too/"></div>
+<div data-frame-src="https://i-am-an-embed-three/"></div>
+```
+
+Then in our script, we can skip the fanfare of setting up a `Framer` for each one and use the `data-frame-src` attribute to find them.
+
+```js
+import { autoInitFrames } from '@wireservice/frames';
+
+// looks for any elements with `data-frame-src` that haven't been initialized yet, and sets them up
+autoInitFrames();
+```
+
+If you're needing to pass any of the other options to `Framer` when you're automatically creating the embeds, you can add matching data attributes that the initializer will pick up and pass along.
+
+```html
+<div
+  data-frame-src="https://i-am-an-embed/"
+  data-frame-sandbox="allow-scripts allow-same-origin"
+></div>
 ```
 
 ### From the **embedded** page (_frame_ or _child_)
 
-While the code to setup the embedding page is similar to Pym's `Parent` class, the method for making the embedded page communicate with parent page is a little different.
+While the code to setup the host page is similar to Pym's `Parent` class, the methods for making the iframed page communicate with the host page are a little different.
 
-Want to set it and forget it? You can import a function that sets up all the listeners and sends the initial height of the frame's content.
+Want to set it and forget it? You can import a function that sets up listeners and sends the initial height of the frame's content.
 
 ```js
-import { initFrame } from '@rdm/frames';
+import { initFrame } from '@wireservice/frames';
 
 // 1. Sends the initial frame's content height
-// 2. Sets up a listener to send the height on load
+// 2. Sets up an one-time istener to send the height on load
 // 3. Sets up a listener to send the height every time the frame resizes
 initFrame();
 ```
 
-However, you can set and use each of these independently depending on the needs of your frame's content.
+You can also automatically set up long polling for height changes as well.
+
+```js
+import { initFrameAndPoll } from '@wireservice/frames';
+
+// 1. Sends the initial frame's content height
+// 2. Sets up an one-time listener to send the height on load
+// 3. Sets up a listener to send the height every time the frame resizes
+// 4. Sets up an interval to send a new height update every 300ms
+initFrameAndPoll();
+```
+
+Alternatively, you can set and use function independently depending on the needs of your frame's content.
 
 ```js
 import {
   sendFrameHeight,
   sendHeightOnLoad,
   sendHeightOnResize,
-} from '@rdm/frames';
+  sendHeightOnPoll,
+} from '@wireservice/frames';
 
 // 1. Sends the initial frame's content height
 sendFrameHeight();
 
-// 2. Sets up a listener to send the height on load
+// 2. Sets up an one-time listener to send the height on load
 sendHeightOnLoad();
 
 // 3. Sets up a listener to send the height every time the frame resizes
 sendHeightOnResize();
 
-// This is identical to what initFrame() does!
+// 4. Sets up an interval to send a new height update every 150ms
+sendHeightOnPoll(150);
+
+// 1-3 is identical to initFrame()! 1-4 is identical to initFrameAndPoll()!
 ```
 
-Typically using `initFrame()` will be enough, but if you have code that will potentially change the height of the frame's content (like with an `<input>` or `<button>` press), you can use `sendFrameHeight()` to manually recalculate and send an update to the parent page.
+Typically using `initFrame()` will be enough, but if you have code that will potentially change the height of the frame's content (like with an `<input>` or `<button>` press) and would rather not use polling, you can use `sendFrameHeight()` to manually recalculate and send an update to the parent page.
 
 ## API
 
@@ -92,153 +133,82 @@ Typically using `initFrame()` will be enough, but if you have code that will pot
 
 - [Framer](#framer)
   - [Parameters](#parameters)
-  - [sendMessage](#sendmessage)
-    - [Parameters](#parameters-1)
+  - [remove](#remove)
     - [Examples](#examples)
-- [sendMessage](#sendmessage-1)
-  - [Parameters](#parameters-2)
+- [autoInitFrames](#autoinitframes)
   - [Examples](#examples-1)
-- [sendHeightOnResize](#sendheightonresize)
+- [sendFrameHeight](#sendframeheight)
+  - [Parameters](#parameters-1)
   - [Examples](#examples-2)
 - [sendHeightOnLoad](#sendheightonload)
   - [Examples](#examples-3)
-- [sendHeightOnPoll](#sendheightonpoll)
-  - [Parameters](#parameters-3)
+- [sendHeightOnResize](#sendheightonresize)
   - [Examples](#examples-4)
-- [sendFrameHeight](#sendframeheight)
-  - [Parameters](#parameters-4)
+- [sendHeightOnPoll](#sendheightonpoll)
+  - [Parameters](#parameters-2)
   - [Examples](#examples-5)
-- [createMessageListener](#createmessagelistener)
-  - [Examples](#examples-6)
 - [initFrame](#initframe)
+  - [Examples](#examples-6)
+- [initFrameAndPoll](#initframeandpoll)
+  - [Parameters](#parameters-3)
   - [Examples](#examples-7)
-- [initFrameThenPoll](#initframethenpoll)
-  - [Parameters](#parameters-5)
-  - [Examples](#examples-8)
 
 ### Framer
 
-The Framer object to be called in the parent page.
+The Framer object to be called in the host page. Effectively a wrapper around
+interactions with an embedded iframe.
 
 #### Parameters
 
-- `element` **[Element](https://developer.mozilla.org/docs/Web/API/Element)** the containing DOM element for the iframe
-- `url` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** the URL to set as the `src` of the iframe
-- `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** optional options to be set on the iframe (optional, default `{}`)
+- `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** options used to prepare the iframe
   - `options.allowfullscreen` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** toggles the `allowfullscreen` attribute (optional, default `false`)
-  - `options.allowpaymentrequest` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** toggles the `allowpaymentrequest` attribute (optional, default `false`)
+  - `options.container` **[Element](https://developer.mozilla.org/docs/Web/API/Element)** the containing DOM element for the iframe
   - `options.name` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** sets the `name` attribute
   - `options.referrerpolicy` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** sets the `referrerpolicy` attribute
   - `options.sandbox` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** sets the `sandbox` attribute (optional, default `'allow-scripts'`)
+  - `options.src` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** the URL to set as the `src` of the iframe
 
-#### sendMessage
+#### remove
 
-Sends an arbitrary message to the iframe.
-
-##### Parameters
-
-- `type` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)**
-- `data` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** (optional, default `{}`)
+Removes event listeners and removes the iframe from the container.
 
 ##### Examples
 
 ```javascript
-framer.sendMessage('send-trigger', { info: 'important' });
-
-// the frame recieves the following:
-// {
-//   sentinel: '<value>',
-//   type: 'send-trigger',
-//   info: 'important',
-// }
-```
-
-### sendMessage
-
-A wrapper around postMessage to normalize the message body. Automatically
-includes the sentinel value.
-
-#### Parameters
-
-- `type` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Type of message being sent
-- `data` **[Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)?** Any additional data to send (optional, default `{}`)
-
-#### Examples
-
-```javascript
-sendMessage('send-trigger', { info: 'important' });
-
-// parent page recieves the following:
-// {
-//   sentinel: '<value>',
-//   type: 'send-trigger',
-//   info: 'important',
-// }
+const framer = new Framer(...);
+// tears down the Framer
+framer.remove();
 ```
 
 Returns **void**
 
-### sendHeightOnResize
+### autoInitFrames
 
-Sets up an event listener for the resize event that sends the new frame
-height to the parent.
-
-#### Examples
-
-```javascript
-// every time the frame is resized, tell the parent page what its new height is
-sendHeightOnResize();
-```
-
-Returns **void**
-
-### sendHeightOnLoad
-
-Sets up an event listener for the load event that sends the new frame
-height to the parent. Automatically removes itself once fired.
+Automatically initializes any frames that have not already been
+auto-activated.
 
 #### Examples
 
 ```javascript
-// once the frame's load event is fired, tell the parent page its new height
-sendHeightOnLoad();
+// sets up all frames that have not been initialized yet
+autoInitFrames();
 ```
 
-Returns **void**
-
-### sendHeightOnPoll
-
-Sends height updates to the parent page on an interval.
-
-#### Parameters
-
-- `delay` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** How long to set the interval (optional, default `500`)
-
-#### Examples
-
-```javascript
-// will call sendFrameHeight every 500ms
-sendHeightOnPoll();
-
-// will call sendFrameHeight every 250ms
-sendHeightOnPoll(250);
-```
-
-Returns **void**
+Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** An array of all the created Framers
 
 ### sendFrameHeight
 
-Sends the current document's height or provided value to the parent window
+Sends the current document's height or provided value to the host window
 using postMessage.
 
 #### Parameters
 
-- `height` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** The height to pass to the parent page, is determined automatically if not passed (optional, default `getDocumentHeight()`)
+- `height` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** The height to pass to the host page, is determined automatically if not passed (optional, default `getDocumentHeight()`)
 
 #### Examples
 
 ```javascript
-// Uses the document's height to tell the parent frame
+// Uses the document's height to tell the host page
 sendFrameHeight();
 
 // Pass a height you've determined in another way
@@ -247,29 +217,59 @@ sendFrameHeight(500);
 
 Returns **void**
 
-### createMessageListener
+### sendHeightOnLoad
 
-Creates an observable that listens for messages from the parent page. Only
-needed for specialized cases. Automatically validates against the sentinel
-value.
+Sets up an event listener for the load event that sends the new frame
+height to the host. Automatically removes itself once fired.
 
 #### Examples
 
 ```javascript
-const observer = createMessageListener();
-
-observer.on('special-message', data => {
-  console.log(data); // the message from the parent page
-});
+// once the frame's load event is fired, tell the host page its new height
+sendHeightOnLoad();
 ```
 
-Returns **Mitt** An instance of `mitt`
+Returns **void**
+
+### sendHeightOnResize
+
+Sets up an event listener for the resize event that sends the new frame
+height to the host.
+
+#### Examples
+
+```javascript
+// every time the frame is resized, tell the host page what its new height is
+sendHeightOnResize();
+```
+
+Returns **void**
+
+### sendHeightOnPoll
+
+Sends height updates to the host page on an interval.
+
+#### Parameters
+
+- `delay` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** How long to set the interval (optional, default `300`)
+
+#### Examples
+
+```javascript
+// will call sendFrameHeight every 300ms
+sendHeightOnPoll();
+
+// will call sendFrameHeight every 150ms
+sendHeightOnPoll(150);
+```
+
+Returns **void**
 
 ### initFrame
 
-A helper for running the usual functions for setting up a frame.
+A helper for running the standard functions for setting up a frame.
 
-Automatically calls sendFrameHeight, sendHeightOnLoad and sendHeightOnResize.
+Automatically calls an sendFrameHeight, sendHeightOnLoad and sendHeightOnResize.
 
 #### Examples
 
@@ -279,19 +279,19 @@ initFrame();
 
 Returns **void**
 
-### initFrameThenPoll
+### initFrameAndPoll
 
 Initializes a frame, then sets up a poll to continue to update on an interval.
 
 #### Parameters
 
-- `delay` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** An optional delay to pass to sendHeightOnPoll
+- `delay` **[number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)?** An optional custom delay to pass to sendHeightOnPoll
 
 #### Examples
 
 ```javascript
 // calls initFrame, then calls sendHeightOnPoll
-initFrameThenPoll();
+initFrameAndPoll();
 ```
 
 Returns **void**

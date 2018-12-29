@@ -1,37 +1,14 @@
-// packages
-import mitt from 'mitt';
-
 // internal
 import { AMP_SENTINEL, EMBED_SIZE } from './constants.mjs';
 
 /**
- * Gets the height of the current document's body. Uses offsetHeight to ensure
- * that margins are accounted for.
+ * A wrapper around postMessage to normalize the message body. Automatically
+ * includes the AMP sentinel value.
  *
  * @private
- * @returns {number}
- */
-function getDocumentHeight() {
-  return document.documentElement.offsetHeight;
-}
-
-/**
- * A wrapper around postMessage to normalize the message body. Automatically
- * includes the sentinel value.
- *
  * @param {string} type Type of message being sent
  * @param {Object} [data] Any additional data to send
  * @returns {void}
- * @example
- *
- * sendMessage('send-trigger', { info: 'important' });
- *
- * // parent page recieves the following:
- * // {
- * //   sentinel: '<value>',
- * //   type: 'send-trigger',
- * //   info: 'important',
- * // }
  */
 function sendMessage(type, data = {}) {
   window.parent.postMessage(
@@ -45,63 +22,25 @@ function sendMessage(type, data = {}) {
 }
 
 /**
- * Sets up an event listener for the resize event that sends the new frame
- * height to the parent.
+ * Gets the height of the current document's body. Uses offsetHeight to ensure
+ * that margins are accounted for.
  *
- * @returns {void}
- * @example
- *
- * // every time the frame is resized, tell the parent page what its new height is
- * sendHeightOnResize();
+ * @private
+ * @returns {number}
  */
-function sendHeightOnResize() {
-  window.addEventListener('resize', () => sendFrameHeight());
+function getDocumentHeight() {
+  return document.documentElement.offsetHeight;
 }
 
 /**
- * Sets up an event listener for the load event that sends the new frame
- * height to the parent. Automatically removes itself once fired.
- *
- * @returns {void}
- * @example
- *
- * // once the frame's load event is fired, tell the parent page its new height
- * sendHeightOnLoad();
- */
-function sendHeightOnLoad() {
-  window.addEventListener('load', function cb(event) {
-    sendFrameHeight();
-
-    event.currentTarget.removeEventListener(event.type, cb);
-  });
-}
-
-/**
- * Sends height updates to the parent page on an interval.
- *
- * @param {number} [delay] How long to set the interval
- * @returns {void}
- * @example
- *
- * // will call sendFrameHeight every 500ms
- * sendHeightOnPoll();
- *
- * // will call sendFrameHeight every 250ms
- * sendHeightOnPoll(250);
- */
-function sendHeightOnPoll(delay = 300) {
-  setInterval(sendFrameHeight, delay);
-}
-
-/**
- * Sends the current document's height or provided value to the parent window
+ * Sends the current document's height or provided value to the host window
  * using postMessage.
  *
- * @param {number} [height] The height to pass to the parent page, is determined automatically if not passed
+ * @param {number} [height] The height to pass to the host page, is determined automatically if not passed
  * @returns {void}
  * @example
  *
- * // Uses the document's height to tell the parent frame
+ * // Uses the document's height to tell the host page
  * sendFrameHeight();
  *
  * // Pass a height you've determined in another way
@@ -113,39 +52,58 @@ function sendFrameHeight(height = getDocumentHeight()) {
 }
 
 /**
- * Creates an observable that listens for messages from the parent page. Only
- * needed for specialized cases. Automatically validates against the sentinel
- * value.
+ * Sets up an event listener for the load event that sends the new frame
+ * height to the host. Automatically removes itself once fired.
  *
- * @returns {Mitt} An instance of `mitt`
+ * @returns {void}
  * @example
  *
- * const observer = createMessageListener();
- *
- * observer.on('special-message', data => {
- *   console.log(data); // the message from the parent page
- * });
+ * // once the frame's load event is fired, tell the host page its new height
+ * sendHeightOnLoad();
  */
-function createMessageListener() {
-  const observer = mitt();
+function sendHeightOnLoad() {
+  window.addEventListener('load', function cb() {
+    sendFrameHeight();
 
-  function fn(event) {
-    const { data } = event;
-
-    if (data.type == null || data.sentinel !== AMP_SENTINEL) return;
-
-    observer.emit(data.type, data);
-  }
-
-  window.addEventListener('message', fn);
-
-  return observer;
+    window.removeEventListener('load', cb);
+  });
 }
 
 /**
- * A helper for running the usual functions for setting up a frame.
+ * Sets up an event listener for the resize event that sends the new frame
+ * height to the host.
  *
- * Automatically calls sendFrameHeight, sendHeightOnLoad and sendHeightOnResize.
+ * @returns {void}
+ * @example
+ *
+ * // every time the frame is resized, tell the host page what its new height is
+ * sendHeightOnResize();
+ */
+function sendHeightOnResize() {
+  window.addEventListener('resize', () => sendFrameHeight());
+}
+
+/**
+ * Sends height updates to the host page on an interval.
+ *
+ * @param {number} [delay] How long to set the interval
+ * @returns {void}
+ * @example
+ *
+ * // will call sendFrameHeight every 300ms
+ * sendHeightOnPoll();
+ *
+ * // will call sendFrameHeight every 150ms
+ * sendHeightOnPoll(150);
+ */
+function sendHeightOnPoll(delay = 300) {
+  setInterval(sendFrameHeight, delay);
+}
+
+/**
+ * A helper for running the standard functions for setting up a frame.
+ *
+ * Automatically calls an sendFrameHeight, sendHeightOnLoad and sendHeightOnResize.
  *
  * @returns {void}
  * @example
@@ -166,20 +124,18 @@ function initFrame() {
  * @example
  *
  * // calls initFrame, then calls sendHeightOnPoll
- * initFrameThenPoll();
+ * initFrameAndPoll();
  */
-function initFrameThenPoll(delay) {
+function initFrameAndPoll(delay) {
   initFrame();
   sendHeightOnPoll(delay);
 }
 
 export {
-  createMessageListener,
   initFrame,
-  initFrameThenPoll,
+  initFrameAndPoll,
   sendFrameHeight,
   sendHeightOnLoad,
   sendHeightOnPoll,
   sendHeightOnResize,
-  sendMessage,
 };
