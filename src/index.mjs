@@ -1,5 +1,5 @@
 // for the parent or host page
-export { Framer } from './framer.mjs';
+export { autoInitFrames, frames, Framer } from './framer.mjs';
 
 // for the frame or child page
 export {

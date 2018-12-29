@@ -12,18 +12,24 @@
     </style>
   </head>
   <body>
-    <div id="embed"></div>
+    <div data-frame-src="http://localhost:5000/examples/embed/"></div>
+    <div data-frame-src="http://localhost:5000/examples/embed/"></div>
+
     <script type="module">
-      import { Framer } from '../dist/index.mjs';
+      import { autoInitFrames, frames } from '../dist/index.mjs';
 
-      const framer = new Framer(
-        document.getElementById('embed'),
-        'http://localhost:5000/examples/embed/',
-        { sandbox: 'allow-scripts allow-same-origin' }
-      );
+      autoInitFrames();
 
-      framer.sendMessage('ad-loader', { hello: 'world' });
-      framer.sendMessage('ad-loader', { bear: 'whales' });
+      window.frames = frames;
+
+      // const framer = new Framer({
+      //   element: document.getElementById('embed'),
+      //   url: 'http://localhost:5000/examples/embed/',
+      //   sandbox: 'allow-scripts allow-same-origin',
+      // });
+
+      // framer.sendMessage('ad-loader', { hello: 'world' });
+      // framer.sendMessage('ad-loader', { bear: 'whales' });
     </script>
   </body>
 </html>

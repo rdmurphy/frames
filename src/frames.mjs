@@ -2,7 +2,7 @@
 import mitt from 'mitt';
 
 // internal
-import { EMBED_SIZE, SENTINEL } from './constants.mjs';
+import { AMP_SENTINEL, EMBED_SIZE } from './constants.mjs';
 
 /**
  * Gets the height of the current document's body. Uses offsetHeight to ensure
@@ -36,7 +36,7 @@ function getDocumentHeight() {
 function sendMessage(type, data = {}) {
   window.parent.postMessage(
     {
-      sentinel: SENTINEL,
+      sentinel: AMP_SENTINEL,
       type,
       ...data,
     },
@@ -89,7 +89,7 @@ function sendHeightOnLoad() {
  * // will call sendFrameHeight every 250ms
  * sendHeightOnPoll(250);
  */
-function sendHeightOnPoll(delay = 500) {
+function sendHeightOnPoll(delay = 300) {
   setInterval(sendFrameHeight, delay);
 }
 
@@ -132,7 +132,7 @@ function createMessageListener() {
   function fn(event) {
     const { data } = event;
 
-    if (data.type == null || data.sentinel !== SENTINEL) return;
+    if (data.type == null || data.sentinel !== AMP_SENTINEL) return;
 
     observer.emit(data.type, data);
   }
@@ -161,7 +161,7 @@ function initFrame() {
 /**
  * Initializes a frame, then sets up a poll to continue to update on an interval.
  *
- * @param {number} [delay] An optional delay to pass to sendHeightOnPoll
+ * @param {number} [delay] An optional custom delay to pass to sendHeightOnPoll
  * @returns {void}
  * @example
  *

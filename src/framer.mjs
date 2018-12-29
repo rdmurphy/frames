@@ -1,11 +1,18 @@
-import { EMBED_SIZE, SENTINEL } from './constants.mjs';
+import {
+  AMP_SENTINEL,
+  EMBED_SIZE,
+  FRAME_INITIALIZED_ATTRIBUTE,
+  FRAME_SRC_ATTRIBUTE,
+} from './constants.mjs';
+
+const frames = new Set();
 
 /**
  * The Framer object to be called in the parent page.
  *
- * @param {Element} element the containing DOM element for the iframe
- * @param {string} url the URL to set as the `src` of the iframe
- * @param {object} [options] optional options to be set on the iframe
+ * @param {object} options options used to prepare the iframe
+ * @param {Element} options.element the containing DOM element for the iframe
+ * @param {string} options.url the URL to set as the `src` of the iframe
  * @param {boolean} [options.allowfullscreen] toggles the `allowfullscreen` attribute
  * @param {boolean} [options.allowpaymentrequest] toggles the `allowpaymentrequest` attribute
  * @param {string} [options.name] sets the `name` attribute
@@ -13,17 +20,15 @@ import { EMBED_SIZE, SENTINEL } from './constants.mjs';
  * @param {string} [options.sandbox] sets the `sandbox` attribute
  */
 class Framer {
-  constructor(
+  constructor({
+    allowfullscreen = false,
+    allowpaymentrequest = false,
     element,
+    name,
+    referrerpolicy,
+    sandbox = 'allow-scripts',
     url,
-    {
-      allowfullscreen = false,
-      allowpaymentrequest = false,
-      name,
-      referrerpolicy,
-      sandbox = 'allow-scripts',
-    } = {}
-  ) {
+  }) {
     this.element = element;
     this.url = url;
     this.allowfullscreen = allowfullscreen;
@@ -31,7 +36,6 @@ class Framer {
     this.name = name;
     this.referrerpolicy = referrerpolicy;
     this.sandbox = sandbox;
-    this.iframe = null;
     this.isLoaded = false;
     this.queue = [];
 
@@ -39,6 +43,8 @@ class Framer {
     window.addEventListener('message', this.processMessage_, false);
 
     this.createIframe_();
+
+    frames.add(this);
   }
 
   /**
@@ -48,9 +54,10 @@ class Framer {
    * @returns {void}
    */
   createIframe_() {
-    this.iframe = document.createElement('iframe');
+    const iframe = (this.iframe = document.createElement('iframe'));
+    const sA = iframe.setAttribute;
 
-    this.iframe.onload = () => {
+    iframe.onload = () => {
       this.isLoaded = true;
       const queue = this.queue;
 
@@ -60,31 +67,32 @@ class Framer {
       }
     };
 
-    this.iframe.setAttribute('src', this.url);
-    this.iframe.setAttribute('width', '100%');
-    this.iframe.setAttribute('scrolling', 'no');
-    this.iframe.setAttribute('marginheight', '0');
-    this.iframe.setAttribute('frameborder', '0');
+    sA('src', this.url);
+    sA('width', '100%');
+    sA('scrolling', 'no');
+    sA('marginheight', '0');
+    sA('frameborder', '0');
+    sA(FRAME_INITIALIZED_ATTRIBUTE, '');
 
     if (this.allowfullscreen) {
-      this.iframe.setAttribute('allowfullscreen', '');
+      sA('allowfullscreen', '');
     }
 
     if (this.allowpaymentrequest) {
-      this.iframe.setAttribute('allowpaymentrequest', '');
+      sA('allowpaymentrequest', '');
     }
 
     if (this.name) {
-      this.iframe.setAttribute('name', name);
+      sA('name', name);
     }
 
     if (this.referrerpolicy) {
-      this.iframe.setAttribute('referrerpolicy', this.referrerpolicy);
+      sA('referrerpolicy', this.referrerpolicy);
     }
 
-    this.iframe.setAttribute('sandbox', this.sandbox);
+    sA('sandbox', this.sandbox);
 
-    this.element.appendChild(this.iframe);
+    this.element.appendChild(iframe);
   }
 
   /**
@@ -100,9 +108,7 @@ class Framer {
 
     const { data } = event;
 
-    if (data.sentinel !== SENTINEL) return;
-
-    if (data.type === EMBED_SIZE) {
+    if (data.sentinel === AMP_SENTINEL && data.type === EMBED_SIZE) {
       this.setIframeHeight_(data.height);
     }
   }
@@ -150,4 +156,18 @@ class Framer {
   }
 }
 
-export { Framer };
+function autoInitFrames() {
+  const matches = document.querySelectorAll(
+    `[${FRAME_SRC_ATTRIBUTE}]:not([${FRAME_INITIALIZED_ATTRIBUTE}])`
+  );
+
+  for (const element of matches) {
+    new Framer({
+      element,
+      url: element.getAttribute(FRAME_SRC_ATTRIBUTE),
+      sandbox: 'allow-scripts allow-same-origin',
+    });
+  }
+}
+
+export { autoInitFrames, frames, Framer };
