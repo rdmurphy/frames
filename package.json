@@ -7,14 +7,16 @@
   "unpkg": "dist/index.umd.js",
   "module": "dist/index.mjs",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "build": "npm run -s build:main",
     "build:main": "microbundle src/index.mjs --target web",
     "build:watch": "microbundle watch src/index.mjs --target web",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
-    "prepublishOnly": "agadoo",
+    "prerelease": "npm test && agadoo",
+    "release": "git commit -am \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags && npm publish",
     "test": "jest"
   },
   "repository": {
