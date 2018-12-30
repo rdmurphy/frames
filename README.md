@@ -1,11 +1,11 @@
 <h1 align="center">
-  @wireservice/frames
+  @newswire/frames
 </h1>
 <p align="center">
-<a href="https://www.npmjs.org/package/@wireservice/frames"><img src="https://img.shields.io/npm/v/@wireservice/frames.svg?style=flat" alt="npm"></a>
+<a href="https://www.npmjs.org/package/@newswire/frames"><img src="https://img.shields.io/npm/v/@newswire/frames.svg?style=flat" alt="npm"></a>
 </p>
 
-`@wireservice/frames` is a [greenfield](https://en.wikipedia.org/wiki/Greenfield_project) take on responsive iframes in the spirit of [Pym.js](http://blog.apps.npr.org/pym.js/).
+`@newswire/frames` is a [greenfield](https://en.wikipedia.org/wiki/Greenfield_project) take on responsive iframes in the spirit of [Pym.js](http://blog.apps.npr.org/pym.js/).
 
 ## Key features
 
@@ -16,7 +16,7 @@
 ## Installation
 
 ```sh
-npm install @wireservice/frames
+npm install @newswire/frames
 ```
 
 ## Usage
@@ -34,7 +34,7 @@ Assume we have the following markup in our HTML:
 Then, in our script:
 
 ```js
-import { Framer } from '@wireservice/frames';
+import { Framer } from '@newswire/frames';
 
 const container = document.getElementById('embed-container');
 const src = 'https://i-am-an-embed/';
@@ -43,7 +43,7 @@ const framer = new Framer({ container, src });
 // Now the iframe has been added to the page and is listening for height changes notifications from within the iframe
 ```
 
-A popular feature of Pym.js was the ability to automatically initialize embeds that had matching attibutes on their container elements. `@wireservice/frames` also includes this capability.
+A popular feature of Pym.js was the ability to automatically initialize embeds that had matching attibutes on their container elements. `@newswire/frames` also includes this capability.
 
 Assume we have the following markup in our HTML:
 
@@ -56,7 +56,7 @@ Assume we have the following markup in our HTML:
 Then in our script, we can skip the fanfare of setting up a `Framer` for each one and use the `data-frame-src` attribute to find them.
 
 ```js
-import { autoInitFrames } from '@wireservice/frames';
+import { autoInitFrames } from '@newswire/frames';
 
 // looks for any elements with `data-frame-src` that haven't been initialized yet, and sets them up
 autoInitFrames();
@@ -78,7 +78,7 @@ While the code to setup the host page is similar to Pym's `Parent` class, the me
 Want to set it and forget it? You can import a function that sets up listeners and sends the initial height of the frame's content.
 
 ```js
-import { initFrame } from '@wireservice/frames';
+import { initFrame } from '@newswire/frames';
 
 // 1. Sends the initial frame's content height
 // 2. Sets up an one-time istener to send the height on load
@@ -89,7 +89,7 @@ initFrame();
 You can also automatically set up long polling for height changes as well.
 
 ```js
-import { initFrameAndPoll } from '@wireservice/frames';
+import { initFrameAndPoll } from '@newswire/frames';
 
 // 1. Sends the initial frame's content height
 // 2. Sets up an one-time listener to send the height on load
@@ -106,7 +106,7 @@ import {
   sendHeightOnLoad,
   sendHeightOnResize,
   sendHeightOnPoll,
-} from '@wireservice/frames';
+} from '@newswire/frames';
 
 // 1. Sends the initial frame's content height
 sendFrameHeight();
