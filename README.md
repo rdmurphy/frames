@@ -2,7 +2,11 @@
   @newswire/frames
 </h1>
 <p align="center">
-<a href="https://www.npmjs.org/package/@newswire/frames"><img src="https://img.shields.io/npm/v/@newswire/frames.svg?style=flat" alt="npm"></a>
+  <a href="https://www.npmjs.org/package/@newswire/frames"><img src="https://badgen.net/npm/v/@newswire/frames" alt="npm"></a>
+  <a href="https://david-dm.org/rdmurphy/frames"><img src="https://badgen.net/david/dep/rdmurphy/frames" alt="dependencies"></a>
+  <a href="https://unpkg.com/@newswire/frames/dist/index.umd.js"><img src="https://badgen.net/badgesize/gzip/https://unpkg.com/@newswire/frames/dist/index.umd.js" alt="gzip size"></a>
+  <a href="https://unpkg.com/@newswire/frames/dist/index.umd.js"><img src="https://badgen.net/badgesize/brotli/https://unpkg.com/@newswire/frames/dist/index.umd.js" alt="brotli size"></a>
+  <a href="https://packagephobia.now.sh/result?p=@nprapps/sidechain"><img src="https://badgen.net/packagephobia/install/@newswire/frames" alt="install size"></a>
 </p>
 
 `@newswire/frames` is a [greenfield](https://en.wikipedia.org/wiki/Greenfield_project) take on responsive iframes in the spirit of [Pym.js](http://blog.apps.npr.org/pym.js/).
