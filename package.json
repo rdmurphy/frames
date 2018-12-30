@@ -1,7 +1,7 @@
 {
   "name": "@newswire/frames",
   "version": "0.1.0",
-  "description": "Pym 2, Electric Boogaloo",
+  "description": "A greenfield take on responsive iframes in the spirit of Pym.js.",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
   "unpkg": "dist/index.umd.js",
