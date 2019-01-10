@@ -1,5 +1,6 @@
 // internal
 import { AMP_SENTINEL, EMBED_SIZE } from './constants.mjs';
+import { extend } from './utils.mjs';
 
 /**
  * A wrapper around postMessage to normalize the message body. Automatically
@@ -12,11 +13,7 @@ import { AMP_SENTINEL, EMBED_SIZE } from './constants.mjs';
  */
 function sendMessage(type, data = {}) {
   window.parent.postMessage(
-    {
-      sentinel: AMP_SENTINEL,
-      type,
-      ...data,
-    },
+    extend({ sentinel: AMP_SENTINEL, type }, data),
     '*'
   );
 }

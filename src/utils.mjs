@@ -56,4 +56,9 @@ function getMatchingAttributes(element, prefix) {
   return attrs;
 }
 
-export { getMatchingAttributes };
+function extend(obj, props) {
+  for (let i in props) obj[i] = props[i];
+  return obj;
+}
+
+export { extend, getMatchingAttributes };

@@ -1,4 +1,4 @@
-import { getMatchingAttributes } from './utils.mjs';
+import { extend, getMatchingAttributes } from './utils.mjs';
 import {
   AMP_SENTINEL,
   EMBED_SIZE,
@@ -146,10 +146,14 @@ function autoInitFrames() {
     container.setAttribute(FRAME_AUTO_INITIALIZED_ATTRIBUTE, '');
 
     activated.push(
-      new Framer({
-        container,
-        ...attributes,
-      })
+      new Framer(
+        extend(
+          {
+            container,
+          },
+          attributes
+        )
+      )
     );
   }
 
