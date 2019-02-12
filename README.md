@@ -17,6 +17,18 @@
 - 🌴 **Tree-shakable** by default - import only what you need to achieve responsiveness
 - ⚡️ **Speaks [AMP](https://www.ampproject.org)** and is compatible with [`amp-iframe`](https://www.ampproject.org/docs/reference/components/amp-iframe)
 
+## Supported browsers
+
+| Browser                        | Supported |
+| ------------------------------ | --------- |
+| Safari                         | ✅        |
+| Mozilla Firefox                | ✅        |
+| Google Chrome                  | ✅        |
+| Opera                          | ✅        |
+| Microsoft Edge                 | ✅        |
+| Internet Explorer 11           | ✅        |
+| Internet Explorer 10 and lower | ⛔️       |
+
 ## Installation
 
 `@newswire/frames` is available via `npm`.
