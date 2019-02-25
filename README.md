@@ -202,6 +202,7 @@ interactions with an embedded iframe.
   - `options.referrerpolicy` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** sets the `referrerpolicy` attribute
   - `options.sandbox` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** sets the `sandbox` attribute (optional, default `'allow-scripts'`)
   - `options.src` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** the URL to set as the `src` of the iframe
+  - `options.title` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** sets the `title` attribute
 
 #### remove
 
