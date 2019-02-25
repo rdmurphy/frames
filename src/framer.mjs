@@ -18,6 +18,7 @@ import {
  * @param {string} [options.name] sets the `name` attribute
  * @param {string} [options.referrerpolicy] sets the `referrerpolicy` attribute
  * @param {string} [options.sandbox] sets the `sandbox` attribute
+ * @param {string} [options.title] sets the `title` attribute
  */
 class Framer {
   constructor({
@@ -27,6 +28,7 @@ class Framer {
     referrerpolicy,
     sandbox = 'allow-scripts',
     src,
+    title,
   }) {
     this.container = container;
     this.src = src;
@@ -34,6 +36,7 @@ class Framer {
     this.name = name;
     this.referrerpolicy = referrerpolicy;
     this.sandbox = sandbox;
+    this.title = title;
 
     this.processMessage_ = this.processMessage_.bind(this);
     window.addEventListener('message', this.processMessage_, false);
@@ -86,6 +89,10 @@ class Framer {
     }
 
     iframe.setAttribute('sandbox', this.sandbox);
+
+    if (this.title) {
+      iframe.setAttribute('title', this.title);
+    }
 
     this.container.appendChild(iframe);
   }
