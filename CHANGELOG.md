@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2019-02-25
+
+### Added
+
+- Added support for `title` attribute
+
+### Changed
+
+- The name of the library for the UMD build is now `newswireFrames` instead of `frames`. This change was necessary to prevent a clash with the native [`Window.frames`](https://developer.mozilla.org/en-US/docs/Web/API/Window/frames).
+
 ## [0.2.0] - 2019-02-12
 
 ### Changed
