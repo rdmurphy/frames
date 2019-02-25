@@ -41,7 +41,7 @@ You can also use it directly via [unpkg.com](https://unpkg.com/).
 
 ```html
 <script src="https://unpkg.com/@newswire/frames/dist/index.umd.js"></script>
-<!-- Now available at `window.frames` -->
+<!-- Now available at `window.newswireFrames` -->
 ```
 
 You can also import it as a module via unpkg!
