@@ -1,6 +1,6 @@
 {
   "name": "@newswire/frames",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A greenfield take on responsive iframes in the spirit of Pym.js.",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
