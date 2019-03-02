@@ -37,7 +37,7 @@
   "dependencies": {},
   "devDependencies": {
     "agadoo": "^1.0.1",
-    "documentation": "^9.1.1",
+    "documentation": "^9.3.0",
     "microbundle": "^0.10.1",
     "prettier": "^1.16.4"
   },
