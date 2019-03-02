@@ -94,6 +94,11 @@ class Framer {
       iframe.setAttribute('title', this.title);
     }
 
+    // remove all children of the container element before inserting iframe
+    while (this.container.firstChild) {
+      this.container.removeChild(this.container.firstChild);
+    }
+
     this.container.appendChild(iframe);
   }
 
