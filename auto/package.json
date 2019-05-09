@@ -1,0 +1,9 @@
+{
+  "name": "auto",
+  "source": "src/index.mjs",
+  "main": "dist/index.js",
+  "umd:main": "dist/index.umd.js",
+  "unpkg": "dist/index.umd.js",
+  "module": "dist/index.mjs",
+  "private": true
+}

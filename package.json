@@ -2,6 +2,7 @@
   "name": "@newswire/frames",
   "version": "0.3.1",
   "description": "A greenfield take on responsive iframes in the spirit of Pym.js.",
+  "source": "src/index.mjs",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
   "unpkg": "dist/index.umd.js",
@@ -11,8 +12,9 @@
     "src"
   ],
   "scripts": {
-    "build": "npm run -s build:main",
-    "build:main": "microbundle src/index.mjs --name newswireFrames --target web",
+    "build": "npm run -s build:main && npm run -s build:auto",
+    "build:auto": "microbundle build --name newswireFramesAuto --cwd auto",
+    "build:main": "microbundle build --name newswireFrames --target web",
     "build:watch": "microbundle watch src/index.mjs --name newswireFrames --target web",
     "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
     "prerelease": "npm test && agadoo",
