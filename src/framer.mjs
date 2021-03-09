@@ -81,7 +81,7 @@ class Framer {
     }
 
     if (this.name) {
-      iframe.setAttribute('name', name);
+      iframe.setAttribute('name', this.name);
     }
 
     if (this.referrerpolicy) {
