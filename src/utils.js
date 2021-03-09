@@ -1,10 +1,10 @@
-import { FRAME_ATTRIBUTE } from './constants.js';
+import { FRAME_ATTRIBUTE_PREFIX } from './constants.js';
 
 /**
  * @private
  * @type {number}
  */
-const prefixLength = FRAME_ATTRIBUTE.length;
+const prefixLength = FRAME_ATTRIBUTE_PREFIX.length;
 
 /**
  * Searches an element's attributes and returns an Object of all the ones that
@@ -32,7 +32,7 @@ export function getMatchingAttributes(element) {
 		const key = map[i].name;
 
 		// continue if the key begins with supplied prefix
-		if (key.substr(0, prefixLength) === FRAME_ATTRIBUTE) {
+		if (key.substr(0, prefixLength) === FRAME_ATTRIBUTE_PREFIX) {
 			// slice off the prefix to get the bare field key
 			const field = key.slice(prefixLength);
 
