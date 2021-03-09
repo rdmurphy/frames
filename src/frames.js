@@ -1,22 +1,5 @@
 // internal
 import { AMP_SENTINEL, EMBED_SIZE, INITIAL_MESSAGE } from './constants.js';
-import { extend } from './utils.js';
-
-/**
- * A wrapper around postMessage to normalize the message body. Automatically
- * includes the AMP sentinel value.
- *
- * @private
- * @param {string} type Type of message being sent
- * @param {Object} [data] Any additional data to send
- * @returns {void}
- */
-function sendMessage(type, data = {}) {
-	window.parent.postMessage(
-		extend({ sentinel: AMP_SENTINEL, type }, data),
-		'*',
-	);
-}
 
 /**
  * Gets the height of the current document's body. Uses offsetHeight to ensure
@@ -45,7 +28,10 @@ function getDocumentHeight() {
  *
  */
 function sendFrameHeight(height = getDocumentHeight()) {
-	sendMessage(EMBED_SIZE, { height });
+	window.parent.postMessage(
+		{ sentinel: AMP_SENTINEL, type: EMBED_SIZE, height },
+		'*',
+	);
 }
 
 /**
