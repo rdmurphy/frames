@@ -64,7 +64,7 @@ export function observeIframe(iframe) {
  * @param {FramerOptions} options
  * @returns {() => void}
  */
-export function Framer(container, { attributes, src }) {
+export function Framer(container, { attributes, src } = {}) {
 	// create the iframe
 	const iframe = document.createElement('iframe');
 
@@ -82,11 +82,13 @@ export function Framer(container, { attributes, src }) {
 	iframe.setAttribute('marginheight', '0');
 	iframe.setAttribute('frameborder', '0');
 
-	// apply any supplied attributes
-	for (let key in attributes) {
-		const value = attributes[key];
+	if (attributes) {
+		// apply any supplied attributes
+		for (let key in attributes) {
+			const value = attributes[key];
 
-		iframe.setAttribute(key, value);
+			iframe.setAttribute(key, value);
+		}
 	}
 
 	// append it to the container

@@ -18,10 +18,8 @@
 			data-frame-attribute-sandbox="allow-scripts allow-same-origin"
 			data-frame-attribute-allowfullscreen
 		></div>
-		<div
-			data-frame-src="/embed/"
-			data-frame-attribute-sandbox="allow-scripts allow-same-origin"
-		></div>
+		<div id="container"></div>
+		<div id="container-with-sandbox"></div>
 
 		<script type="module">
 			import * as frames from '/frames.esm.js';
@@ -31,6 +29,17 @@
 			}, 5000)
 			
 			frames.autoInitFrames();
+
+			frames.Framer(document.getElementById('container'), {
+				src: '/embed/'
+			});
+
+			frames.Framer(document.getElementById('container-with-sandbox'), {
+				src: '/embed/',
+				attributes: {
+					sandbox: 'allow-scripts allow-same-origin'
+				}
+			});
 		</script>
 	</body>
 </html>
