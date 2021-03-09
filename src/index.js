@@ -10,4 +10,5 @@ export {
 	sendHeightOnLoad,
 	sendHeightOnPoll,
 	sendHeightOnResize,
+	sendHeightOnFramerInit,
 } from './frames.js';

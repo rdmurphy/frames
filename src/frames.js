@@ -172,4 +172,5 @@ export {
 	sendHeightOnLoad,
 	sendHeightOnPoll,
 	sendHeightOnResize,
+	sendHeightOnFramerInit,
 };
