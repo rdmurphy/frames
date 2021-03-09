@@ -36,19 +36,13 @@
   "homepage": "https://github.com/rdmurphy/frames#readme",
   "dependencies": {},
   "devDependencies": {
+    "@rdm/prettier-config": "^1.0.1",
     "agadoo": "^2.0.0",
     "documentation": "^13.1.1",
     "microbundle": "^0.13.0",
     "prettier": "^2.2.1"
   },
-  "prettier": {
-    "bracketSpacing": true,
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5"
-  },
+  "prettier": "@rdm/prettier-config",
   "mangle": {
     "regex": "_$"
   }

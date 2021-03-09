@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Use the correct parameter when setting the `name` attribute. (Thanks, @andrewmilligan!)
+
 ## [0.3.1] - 2019-02-25
 
 ### Fixed
