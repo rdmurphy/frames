@@ -1,52 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Embed</title>
-    <style>
-      body {
-        background-color: #222;
-        border: 4px solid grey;
-        color: white;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-          Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        font-weight: bold;
-        letter-spacing: 0.1em;
-        margin: 0;
-      }
-      div {
-        align-items: center;
-        display: flex;
-        justify-content: center;
-        min-height: 200px;
-      }
-    </style>
-  </head>
-  <body>
-    <div><p>EMBED</p></div>
-    <script type="module">
-      import {
-        initFrame,
-        sendFrameHeight,
-      } from 'https://unpkg.com/@newswire/frames/dist/index.mjs';
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Embed</title>
+		<style>
+			body {
+				background-color: #222;
+				border: 4px solid grey;
+				color: white;
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+					Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+				font-weight: bold;
+				letter-spacing: 0.1em;
+				margin: 0;
+			}
+			div {
+				align-items: center;
+				display: flex;
+				justify-content: center;
+				min-height: 200px;
+			}
+		</style>
+	</head>
+	<body>
+		<div><p>EMBED</p></div>
+		<script type="module">
+			import {
+				initFrame,
+				sendFrameHeight,
+			} from 'https://unpkg.com/@newswire/frames/dist/index.mjs';
 
-      function getRandomIntInclusive(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      }
+			function getRandomIntInclusive(min, max) {
+				min = Math.ceil(min);
+				max = Math.floor(max);
+				return Math.floor(Math.random() * (max - min + 1)) + min;
+			}
 
-      initFrame();
+			initFrame();
 
-      window.setInterval(() => {
-        document.querySelector('div').style.height = `${getRandomIntInclusive(
-          200,
-          600
-        )}px`;
-        sendFrameHeight();
-      }, 5000);
-    </script>
-  </body>
+			window.setInterval(() => {
+				document.querySelector('div').style.height = `${getRandomIntInclusive(
+					200,
+					600,
+				)}px`;
+				sendFrameHeight();
+			}, 5000);
+		</script>
+	</body>
 </html>

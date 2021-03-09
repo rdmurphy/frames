@@ -12,10 +12,10 @@ import { extend } from './utils.mjs';
  * @returns {void}
  */
 function sendMessage(type, data = {}) {
-  window.parent.postMessage(
-    extend({ sentinel: AMP_SENTINEL, type }, data),
-    '*'
-  );
+	window.parent.postMessage(
+		extend({ sentinel: AMP_SENTINEL, type }, data),
+		'*',
+	);
 }
 
 /**
@@ -26,7 +26,7 @@ function sendMessage(type, data = {}) {
  * @returns {number}
  */
 function getDocumentHeight() {
-  return document.documentElement.offsetHeight;
+	return document.documentElement.offsetHeight;
 }
 
 /**
@@ -45,7 +45,7 @@ function getDocumentHeight() {
  *
  */
 function sendFrameHeight(height = getDocumentHeight()) {
-  sendMessage(EMBED_SIZE, { height });
+	sendMessage(EMBED_SIZE, { height });
 }
 
 /**
@@ -59,11 +59,11 @@ function sendFrameHeight(height = getDocumentHeight()) {
  * sendHeightOnLoad();
  */
 function sendHeightOnLoad() {
-  window.addEventListener('load', function cb() {
-    sendFrameHeight();
+	window.addEventListener('load', function cb() {
+		sendFrameHeight();
 
-    window.removeEventListener('load', cb);
-  });
+		window.removeEventListener('load', cb);
+	});
 }
 
 /**
@@ -77,7 +77,7 @@ function sendHeightOnLoad() {
  * sendHeightOnResize();
  */
 function sendHeightOnResize() {
-  window.addEventListener('resize', () => sendFrameHeight());
+	window.addEventListener('resize', () => sendFrameHeight());
 }
 
 /**
@@ -94,7 +94,7 @@ function sendHeightOnResize() {
  * sendHeightOnPoll(150);
  */
 function sendHeightOnPoll(delay = 300) {
-  setInterval(sendFrameHeight, delay);
+	setInterval(sendFrameHeight, delay);
 }
 
 /**
@@ -108,9 +108,9 @@ function sendHeightOnPoll(delay = 300) {
  * initFrame();
  */
 function initFrame() {
-  sendFrameHeight();
-  sendHeightOnLoad();
-  sendHeightOnResize();
+	sendFrameHeight();
+	sendHeightOnLoad();
+	sendHeightOnResize();
 }
 
 /**
@@ -124,15 +124,15 @@ function initFrame() {
  * initFrameAndPoll();
  */
 function initFrameAndPoll(delay) {
-  initFrame();
-  sendHeightOnPoll(delay);
+	initFrame();
+	sendHeightOnPoll(delay);
 }
 
 export {
-  initFrame,
-  initFrameAndPoll,
-  sendFrameHeight,
-  sendHeightOnLoad,
-  sendHeightOnPoll,
-  sendHeightOnResize,
+	initFrame,
+	initFrameAndPoll,
+	sendFrameHeight,
+	sendHeightOnLoad,
+	sendHeightOnPoll,
+	sendHeightOnResize,
 };

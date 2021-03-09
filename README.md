@@ -48,9 +48,9 @@ You can also import it as a module via unpkg!
 
 ```html
 <script type="module">
-  import * as frames from 'https://unpkg.com/@newswire/frames/dist/index.mjs';
+	import * as frames from 'https://unpkg.com/@newswire/frames/dist/index.mjs';
 
-  frames.autoInitFrames();
+	frames.autoInitFrames();
 </script>
 ```
 
@@ -101,8 +101,8 @@ If you're needing to pass any of the other options to `Framer` when you're autom
 
 ```html
 <div
-  data-frame-src="https://i-am-an-embed/"
-  data-frame-sandbox="allow-scripts allow-same-origin"
+	data-frame-src="https://i-am-an-embed/"
+	data-frame-sandbox="allow-scripts allow-same-origin"
 ></div>
 ```
 
@@ -137,10 +137,10 @@ Alternatively, you can set and use function independently depending on the needs
 
 ```js
 import {
-  sendFrameHeight,
-  sendHeightOnLoad,
-  sendHeightOnResize,
-  sendHeightOnPoll,
+	sendFrameHeight,
+	sendHeightOnLoad,
+	sendHeightOnResize,
+	sendHeightOnPoll,
 } from '@newswire/frames';
 
 // 1. Sends the initial frame's content height

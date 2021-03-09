@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Basic</title>
-    <style>
-      body {
-        margin: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div
-      data-frame-src="http://localhost:5000/examples/embed/"
-      data-frame-sandbox="allow-scripts allow-same-origin"
-      data-frame-allowfullscreen
-    ></div>
-    <div
-      data-frame-src="http://localhost:5000/examples/embed/"
-      data-frame-sandbox="allow-scripts allow-same-origin"
-    ></div>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Basic</title>
+		<style>
+			body {
+				margin: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div
+			data-frame-src="http://localhost:5000/examples/embed/"
+			data-frame-sandbox="allow-scripts allow-same-origin"
+			data-frame-allowfullscreen
+		></div>
+		<div
+			data-frame-src="http://localhost:5000/examples/embed/"
+			data-frame-sandbox="allow-scripts allow-same-origin"
+		></div>
 
-    <script type="module">
-      import * as frames from 'https://unpkg.com/@newswire/frames/dist/index.mjs';
+		<script type="module">
+			import * as frames from 'https://unpkg.com/@newswire/frames/dist/index.mjs';
 
-      frames.autoInitFrames();
-    </script>
-  </body>
+			frames.autoInitFrames();
+		</script>
+	</body>
 </html>

@@ -2,13 +2,13 @@
   "name": "@newswire/frames",
   "version": "0.3.1",
   "description": "A greenfield take on responsive iframes in the spirit of Pym.js.",
-  "main": "dist/index.js",
-  "umd:main": "dist/index.umd.js",
-  "unpkg": "dist/index.umd.js",
-  "module": "dist/index.mjs",
+  "source": "src/index.mjs",
+  "main": "dist/frames.js",
+  "exports": "./dist/frames.modern.js",
+  "module": "dist/frames.esm.js",
+  "unpkg": "dist/frames.umd.js",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "npm run -s build:main",

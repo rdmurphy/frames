@@ -19,46 +19,46 @@ const booleans = ['allowfullscreen'];
  * @return {object}
  */
 function getMatchingAttributes(element, prefix) {
-  // prepare the object to return
-  const attrs = {};
+	// prepare the object to return
+	const attrs = {};
 
-  // grab all the attributes off the element
-  const map = element.attributes;
+	// grab all the attributes off the element
+	const map = element.attributes;
 
-  // get a count of the number of attributes
-  const length = map.length;
+	// get a count of the number of attributes
+	const length = map.length;
 
-  // get the prefix's length
-  const prefixLength = prefix.length;
+	// get the prefix's length
+	const prefixLength = prefix.length;
 
-  // loop through the attributes
-  for (let i = 0; i < length; i++) {
-    // get each attribute key
-    const key = map[i].name;
+	// loop through the attributes
+	for (let i = 0; i < length; i++) {
+		// get each attribute key
+		const key = map[i].name;
 
-    // continue if the key begins with supplied prefix
-    if (key.substr(0, prefixLength) === prefix) {
-      // slice off the prefix to get the bare field key
-      const field = key.slice(prefixLength);
+		// continue if the key begins with supplied prefix
+		if (key.substr(0, prefixLength) === prefix) {
+			// slice off the prefix to get the bare field key
+			const field = key.slice(prefixLength);
 
-      // grab the value associated with the key
-      let value = map[i].value;
+			// grab the value associated with the key
+			let value = map[i].value;
 
-      if (booleans.indexOf(field) > -1) {
-        value = true;
-      }
+			if (booleans.indexOf(field) > -1) {
+				value = true;
+			}
 
-      // add matching key to object
-      attrs[field] = value;
-    }
-  }
+			// add matching key to object
+			attrs[field] = value;
+		}
+	}
 
-  return attrs;
+	return attrs;
 }
 
 function extend(obj, props) {
-  for (let i in props) obj[i] = props[i];
-  return obj;
+	for (let i in props) obj[i] = props[i];
+	return obj;
 }
 
 export { extend, getMatchingAttributes };
