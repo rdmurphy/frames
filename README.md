@@ -166,57 +166,82 @@ Typically using `initFrame()` will be enough, but if you have code that will pot
 
 #### Table of Contents
 
-- [Framer](#framer)
+- [observeIframe](#observeiframe)
   - [Parameters](#parameters)
-  - [remove](#remove)
-    - [Examples](#examples)
+  - [Examples](#examples)
+- [FramerOptions](#frameroptions)
+  - [Properties](#properties)
+- [Framer](#framer)
+  - [Parameters](#parameters-1)
 - [autoInitFrames](#autoinitframes)
   - [Examples](#examples-1)
+- [attrs](#attrs)
 - [sendFrameHeight](#sendframeheight)
-  - [Parameters](#parameters-1)
+  - [Parameters](#parameters-2)
   - [Examples](#examples-2)
 - [sendHeightOnLoad](#sendheightonload)
   - [Examples](#examples-3)
 - [sendHeightOnResize](#sendheightonresize)
   - [Examples](#examples-4)
-- [sendHeightOnPoll](#sendheightonpoll)
-  - [Parameters](#parameters-2)
+- [sendHeightOnFramerInit](#sendheightonframerinit)
   - [Examples](#examples-5)
-- [initFrame](#initframe)
-  - [Examples](#examples-6)
-- [initFrameAndPoll](#initframeandpoll)
+- [sendHeightOnPoll](#sendheightonpoll)
   - [Parameters](#parameters-3)
+  - [Examples](#examples-6)
+- [initFrame](#initframe)
   - [Examples](#examples-7)
+- [initFrameAndPoll](#initframeandpoll)
+  - [Parameters](#parameters-4)
+  - [Examples](#examples-8)
 
-### Framer
+### observeIframe
 
-The Framer object to be called in the host page. Effectively a wrapper around
-interactions with an embedded iframe.
+Adds an event listener to an existing iframe for receiving height change
+messages. Also tells the iframe that we're listening and requests the
+initial height. Returns an `unobserve()` function for later removing the
+listener.
 
 #### Parameters
 
-- `options` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** options used to prepare the iframe
-  - `options.allowfullscreen` **[boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** toggles the `allowfullscreen` attribute (optional, default `false`)
-  - `options.container` **[Element](https://developer.mozilla.org/docs/Web/API/Element)** the containing DOM element for the iframe
-  - `options.name` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** sets the `name` attribute
-  - `options.referrerpolicy` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** sets the `referrerpolicy` attribute
-  - `options.sandbox` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** sets the `sandbox` attribute (optional, default `'allow-scripts'`)
-  - `options.src` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** the URL to set as the `src` of the iframe
-  - `options.title` **[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)?** sets the `title` attribute
+- `iframe` **[HTMLIFrameElement](https://developer.mozilla.org/docs/Web/API/HTMLIFrameElement)** the iframe to observe
 
-#### remove
-
-Removes event listeners and removes the iframe from the container.
-
-##### Examples
+#### Examples
 
 ```javascript
-const framer = new Framer(...);
-// tears down the Framer
-framer.remove();
+// grab a reference to an existing iframe
+const iframe = document.getElementById('my-embed');
+
+// returns a `unobserve()` function if you need to stop listening
+const unobserve = observeIframe(iframe);
+
+// later, if you need to remove the listener
+unobserve();
 ```
 
-Returns **void**
+###
+
+Type: [MessageEvent](https://developer.mozilla.org/docs/Web/API/MessageEvent)
+
+### FramerOptions
+
+Type: [object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+#### Properties
+
+- `src` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | null)?** the URL to set as the `src` of the iframe
+
+### Framer
+
+The Framer function to be called in the host page. A wrapper around
+interactions with a created iframe. Returns a `remove()` function for
+disconnecting the event listener and removing the iframe from the DOM.
+
+#### Parameters
+
+- `container` **[Element](https://developer.mozilla.org/docs/Web/API/Element)** the containing DOM element for the iframe
+- `options` **[FramerOptions](#frameroptions)**
+  - `options.attributes`
+  - `options.src`
 
 ### autoInitFrames
 
@@ -230,7 +255,7 @@ auto-activated.
 autoInitFrames();
 ```
 
-Returns **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)** An array of all the created Framers
+### attrs
 
 ### sendFrameHeight
 
@@ -281,6 +306,22 @@ sendHeightOnResize();
 
 Returns **void**
 
+### sendHeightOnFramerInit
+
+Sets up an event listener for a message from the parent window that it is
+now listening for messages from this iframe, and tells it the iframe's height
+at that time. This makes it possible to delay observing an iframe (e.g. when
+lazy loading) but trust the parent will get the current height ASAP.
+
+#### Examples
+
+```javascript
+// as soon as a Framer connects, tell the host page what the current height is
+sendHeightOnFramerInit();
+```
+
+Returns **void**
+
 ### sendHeightOnPoll
 
 Sends height updates to the host page on an interval.
@@ -305,7 +346,8 @@ Returns **void**
 
 A helper for running the standard functions for setting up a frame.
 
-Automatically calls an sendFrameHeight, sendHeightOnLoad and sendHeightOnResize.
+Automatically calls an `sendFrameHeight`, `sendHeightOnLoad`, `sendHeightOnResize`
+and `sendHeightOnFramerInit`.
 
 #### Examples
 

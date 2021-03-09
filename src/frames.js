@@ -1,6 +1,6 @@
 // internal
-import { AMP_SENTINEL, EMBED_SIZE } from './constants.mjs';
-import { extend } from './utils.mjs';
+import { AMP_SENTINEL, EMBED_SIZE, INITIAL_MESSAGE } from './constants.js';
+import { extend } from './utils.js';
 
 /**
  * A wrapper around postMessage to normalize the message body. Automatically
@@ -59,11 +59,15 @@ function sendFrameHeight(height = getDocumentHeight()) {
  * sendHeightOnLoad();
  */
 function sendHeightOnLoad() {
-	window.addEventListener('load', function cb() {
-		sendFrameHeight();
+	window.addEventListener(
+		'load',
+		function load() {
+			sendFrameHeight();
 
-		window.removeEventListener('load', cb);
-	});
+			window.removeEventListener('load', load, false);
+		},
+		false,
+	);
 }
 
 /**
@@ -77,7 +81,38 @@ function sendHeightOnLoad() {
  * sendHeightOnResize();
  */
 function sendHeightOnResize() {
-	window.addEventListener('resize', () => sendFrameHeight());
+	window.addEventListener('resize', () => sendFrameHeight(), false);
+}
+
+/**
+ * Sets up an event listener for a message from the parent window that it is
+ * now listening for messages from this iframe, and tells it the iframe's height
+ * at that time. This makes it possible to delay observing an iframe (e.g. when
+ * lazy loading) but trust the parent will get the current height ASAP.
+ *
+ * @returns {void}
+ * @example
+ *
+ * // as soon as a Framer connects, tell the host page what the current height is
+ * sendHeightOnFramerInit();
+ */
+function sendHeightOnFramerInit() {
+	window.addEventListener(
+		'message',
+		function onInit(event) {
+			const { data } = event;
+
+			// if the sentinel and type matches, update our height
+			if (data.sentinel === AMP_SENTINEL && data.type === INITIAL_MESSAGE) {
+				// don't need it anymore
+				window.removeEventListener('message', onInit, false);
+
+				// send the current frame height
+				sendFrameHeight();
+			}
+		},
+		false,
+	);
 }
 
 /**
@@ -100,7 +135,8 @@ function sendHeightOnPoll(delay = 300) {
 /**
  * A helper for running the standard functions for setting up a frame.
  *
- * Automatically calls an sendFrameHeight, sendHeightOnLoad and sendHeightOnResize.
+ * Automatically calls an `sendFrameHeight`, `sendHeightOnLoad`, `sendHeightOnResize`
+ * and `sendHeightOnFramerInit`.
  *
  * @returns {void}
  * @example
@@ -111,6 +147,7 @@ function initFrame() {
 	sendFrameHeight();
 	sendHeightOnLoad();
 	sendHeightOnResize();
+	sendHeightOnFramerInit();
 }
 
 /**

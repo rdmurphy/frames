@@ -1,5 +1,6 @@
 // for the host or parent page
-export { autoInitFrames, Framer } from './framer.mjs';
+export { Framer, observeIframe } from './framer.js';
+export { autoInitFrames } from './auto.js';
 
 // for the frame or child page
 export {
@@ -9,4 +10,4 @@ export {
 	sendHeightOnLoad,
 	sendHeightOnPoll,
 	sendHeightOnResize,
-} from './frames.mjs';
+} from './frames.js';

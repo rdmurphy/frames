@@ -12,19 +12,24 @@
 		</style>
 	</head>
 	<body>
+		<iframe id="frame" src="/embed/" sandbox="allow-scripts allow-same-origin" width="100%" scrolling="no" marginheight="0" frameborder="0"></iframe>
 		<div
-			data-frame-src="http://localhost:5000/examples/embed/"
-			data-frame-sandbox="allow-scripts allow-same-origin"
-			data-frame-allowfullscreen
+			data-frame-src="/embed/"
+			data-frame-attribute-sandbox="allow-scripts allow-same-origin"
+			data-frame-attribute-allowfullscreen
 		></div>
 		<div
-			data-frame-src="http://localhost:5000/examples/embed/"
-			data-frame-sandbox="allow-scripts allow-same-origin"
+			data-frame-src="/embed/"
+			data-frame-attribute-sandbox="allow-scripts allow-same-origin"
 		></div>
 
 		<script type="module">
-			import * as frames from 'https://unpkg.com/@newswire/frames/dist/index.mjs';
+			import * as frames from '/frames.esm.js';
 
+			window.setTimeout(() => {
+				frames.observeIframe(document.getElementById('frame'));
+			}, 5000)
+			
 			frames.autoInitFrames();
 		</script>
 	</body>

@@ -1,25 +1,23 @@
+import { FRAME_ATTRIBUTE } from './constants.js';
+
 /**
- * A white-list of attributes to consider booleans for our purposes. Because
- * iframe attributes like "sandbox" actually mean something when they're an
- * empty string, we can't assume that means "true" across the board.
- *
  * @private
- * @type {Array}
+ * @type {number}
  */
-const booleans = ['allowfullscreen'];
+const prefixLength = FRAME_ATTRIBUTE.length;
 
 /**
  * Searches an element's attributes and returns an Object of all the ones that
- * begin with a specified prefix. Each matching attribute name is returned
+ * begin with our prefix. Each matching attribute name is returned
  * without the prefix.
  *
  * @private
  * @param  {Element} element
- * @param  {string} prefix
- * @return {object}
+ * @return {{[key: string]: string }}
  */
-function getMatchingAttributes(element, prefix) {
+export function getMatchingAttributes(element) {
 	// prepare the object to return
+	/** @type {{[key: string]: string }} */
 	const attrs = {};
 
 	// grab all the attributes off the element
@@ -28,25 +26,18 @@ function getMatchingAttributes(element, prefix) {
 	// get a count of the number of attributes
 	const length = map.length;
 
-	// get the prefix's length
-	const prefixLength = prefix.length;
-
 	// loop through the attributes
 	for (let i = 0; i < length; i++) {
 		// get each attribute key
 		const key = map[i].name;
 
 		// continue if the key begins with supplied prefix
-		if (key.substr(0, prefixLength) === prefix) {
+		if (key.substr(0, prefixLength) === FRAME_ATTRIBUTE) {
 			// slice off the prefix to get the bare field key
 			const field = key.slice(prefixLength);
 
 			// grab the value associated with the key
-			let value = map[i].value;
-
-			if (booleans.indexOf(field) > -1) {
-				value = true;
-			}
+			const value = map[i].value;
 
 			// add matching key to object
 			attrs[field] = value;
@@ -56,9 +47,8 @@ function getMatchingAttributes(element, prefix) {
 	return attrs;
 }
 
-function extend(obj, props) {
+// @ts-ignore
+export function extend(obj, props) {
 	for (let i in props) obj[i] = props[i];
 	return obj;
 }
-
-export { extend, getMatchingAttributes };

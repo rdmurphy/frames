@@ -1,8 +1,9 @@
 {
   "name": "@newswire/frames",
+  "type": "module",
   "version": "0.3.1",
   "description": "A greenfield take on responsive iframes in the spirit of Pym.js.",
-  "source": "src/index.mjs",
+  "source": "src/index.js",
   "main": "dist/frames.js",
   "exports": "./dist/frames.modern.js",
   "module": "dist/frames.esm.js",
@@ -12,11 +13,12 @@
   ],
   "scripts": {
     "build": "npm run -s build:main",
-    "build:main": "microbundle src/index.mjs --name newswireFrames --target web",
-    "build:watch": "microbundle watch src/index.mjs --name newswireFrames --target web",
-    "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
+    "build:main": "microbundle src/index.js --name newswireFrames --target web",
+    "build:watch": "microbundle watch src/index.js --name newswireFrames --target web --no-compress & npm run serve",
+    "docs": "documentation readme --readme-file README.md --section=API src/index.js && prettier --write README.md",
     "prerelease": "npm test && agadoo",
     "release": "git commit -am \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags && npm publish",
+    "serve": "node server.js",
     "test": "echo \"Warning: no tests yet\" && exit 0"
   },
   "repository": {
@@ -40,7 +42,8 @@
     "agadoo": "^2.0.0",
     "documentation": "^13.1.1",
     "microbundle": "^0.13.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "sirv": "^1.0.11"
   },
   "prettier": "@rdm/prettier-config",
   "mangle": {
