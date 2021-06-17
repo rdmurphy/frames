@@ -70,11 +70,14 @@ class Framer {
   createIframe_() {
     const iframe = (this.iframe = document.createElement('iframe'));
 
-    iframe.setAttribute('src', this.src);
     iframe.setAttribute('width', '100%');
     iframe.setAttribute('scrolling', 'no');
     iframe.setAttribute('marginheight', '0');
     iframe.setAttribute('frameborder', '0');
+    
+    if (this.src) {
+      iframe.setAttribute('src', this.src);
+    }
 
     if (this.allowfullscreen) {
       iframe.setAttribute('allowfullscreen', '');
