@@ -6,7 +6,7 @@
   "source": "src/index.js",
   "main": "dist/frames.js",
   "exports": "./dist/frames.modern.js",
-  "module": "dist/frames.esm.js",
+  "module": "dist/frames.module.js",
   "unpkg": "dist/frames.umd.js",
   "files": [
     "dist"
