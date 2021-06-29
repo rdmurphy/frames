@@ -12,14 +12,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run -s build:main",
-    "build:main": "microbundle src/index.js --name newswireFrames --target web",
+    "build": "microbundle src/index.js --name newswireFrames --target web",
     "build:watch": "microbundle watch src/index.js --name newswireFrames --target web --no-compress & npm run serve",
     "docs": "documentation readme --readme-file README.md --section=API src/index.js && prettier --write README.md",
     "prerelease": "npm test && agadoo",
     "release": "git commit -am \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags && npm publish",
     "serve": "node server.js",
-    "test": "echo \"Warning: no tests yet\" && exit 0"
+    "test": "node tests/test.js"
   },
   "repository": {
     "type": "git",
@@ -36,14 +35,15 @@
     "url": "https://github.com/rdmurphy/frames/issues"
   },
   "homepage": "https://github.com/rdmurphy/frames#readme",
-  "dependencies": {},
   "devDependencies": {
     "@rdm/prettier-config": "^1.0.1",
     "agadoo": "^2.0.0",
     "documentation": "^13.1.1",
     "microbundle": "^0.13.0",
+    "playwright": "^1.12.3",
     "prettier": "^2.2.1",
-    "sirv": "^1.0.11"
+    "sirv": "^1.0.11",
+    "uvu": "^0.5.1"
   },
   "prettier": "@rdm/prettier-config",
   "mangle": {
