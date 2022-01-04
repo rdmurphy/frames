@@ -364,3 +364,24 @@ auto('autoInitFrames()', async () => {
 });
 
 auto.run();
+
+const pym = suite('pym');
+
+pym.before(before);
+pym.after(after);
+
+pym('should support pym.js embeds', async () => {
+	// go to the pym parent page
+	await page.goto('http://localhost:3000/pym.html');
+
+	// prep for the eventual iframe on the page
+	const iframe = page.locator('#iframe-container > iframe');
+
+	// inject the frame observer code
+	await page.addScriptTag({ url: '/init-framer-pym.js', type: 'module' });
+
+	// assert the height is 300
+	assert.equal((await iframe.boundingBox()).height, 300);
+});
+
+pym.run();

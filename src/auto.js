@@ -40,7 +40,7 @@ function getMatchingAttributes(element) {
 		const key = map[i].name;
 
 		// continue if the key begins with supplied prefix
-		if (key.substr(0, prefixLength) === FRAME_ATTRIBUTE_PREFIX) {
+		if (key.slice(0, prefixLength) === FRAME_ATTRIBUTE_PREFIX) {
 			// slice off the prefix to get the bare field key
 			const field = key.slice(prefixLength);
 

@@ -1,4 +1,11 @@
-import { AMP_SENTINEL, EMBED_SIZE, INITIAL_MESSAGE } from './constants.js';
+import {
+	AMP_SENTINEL,
+	EMBED_SIZE,
+	HEIGHT,
+	INITIAL_MESSAGE,
+	PYM_REGEX,
+	PYM_SENTINEL,
+} from './constants.js';
 
 /**
  * Adds an event listener to an existing iframe for receiving height change
@@ -35,7 +42,13 @@ export function observeIframe(iframe) {
 
 		// if the sentinel and type matches, update our height
 		if (data.sentinel === AMP_SENTINEL && data.type === EMBED_SIZE) {
-			iframe.setAttribute('height', data.height);
+			iframe.setAttribute(HEIGHT, data.height);
+		} else if (typeof data === 'string' && data.slice(0, 3) === PYM_SENTINEL) {
+			const [, , type, height] = data.split(PYM_REGEX);
+
+			if (type === HEIGHT) {
+				iframe.setAttribute(HEIGHT, height);
+			}
 		}
 	}
 

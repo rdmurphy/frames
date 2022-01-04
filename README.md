@@ -15,6 +15,7 @@
 - 🐜 **1 kilobyte** gzipped for both parent and frame code
 - 🌴 **Tree-shakable** by default - import only what you need to achieve responsiveness
 - ⚡️ **Speaks [AMP](https://www.ampproject.org)** and is compatible with [`amp-iframe`](https://www.ampproject.org/docs/reference/components/amp-iframe)
+- 🕰 **Legacy [Pym.js](http://blog.apps.npr.org/pym.js/) support** - recognizes `height` updates from Pym.js iframes
 
 ## Supported browsers
 
@@ -184,6 +185,10 @@ sendHeightOnPoll(150);
 ```
 
 Typically using `initFrame()` will be enough, but if you have code that will potentially change the height of the frame's content (like with an `<input>` or `<button>` press) and would rather not use polling, you can use `sendFrameHeight()` to manually recalculate and send an update to the parent page.
+
+## Legacy Pym.js support
+
+`@newswire/frames` (`1.0.0+`) can be a drop-in replacement for `Pym.js` on host/parent pages, but it only understands `height` events sent from Pym.js-powered child frames. All other events **will be ignored**. Unless you were doing something exotic or extremely bespoke with Pym.js odds are it will work!
 
 ## API
 
