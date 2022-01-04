@@ -1,23 +1,24 @@
 {
   "name": "@newswire/frames",
+  "type": "module",
   "version": "0.3.1",
-  "description": "A greenfield take on responsive iframes in the spirit of Pym.js.",
-  "main": "dist/index.js",
-  "umd:main": "dist/index.umd.js",
-  "unpkg": "dist/index.umd.js",
-  "module": "dist/index.mjs",
+  "description": "A minimalistic take on responsive iframes in the spirit of Pym.js.",
+  "source": "src/index.js",
+  "main": "dist/frames.cjs",
+  "exports": "./dist/frames.modern.js",
+  "module": "dist/frames.module.js",
+  "unpkg": "dist/frames.umd.js",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
-    "build": "npm run -s build:main",
-    "build:main": "microbundle src/index.mjs --name newswireFrames --target web",
-    "build:watch": "microbundle watch src/index.mjs --name newswireFrames --target web",
-    "docs": "documentation readme --readme-file README.md --section=API src/index.mjs && prettier --write README.md",
+    "build": "microbundle src/index.js --name newswireFrames --target web",
+    "build:watch": "microbundle watch src/index.js --name newswireFrames --target web --no-compress & npm run serve",
+    "docs": "documentation readme --readme-file README.md --section=API src/index.js && prettier --write README.md",
     "prerelease": "npm test && agadoo",
     "release": "git commit -am \"$npm_package_version\" && git tag $npm_package_version && git push && git push --tags && npm publish",
-    "test": "echo \"Warning: no tests yet\" && exit 0"
+    "serve": "node server.js",
+    "test": "node tests/test.js"
   },
   "repository": {
     "type": "git",
@@ -34,13 +35,15 @@
     "url": "https://github.com/rdmurphy/frames/issues"
   },
   "homepage": "https://github.com/rdmurphy/frames#readme",
-  "dependencies": {},
   "devDependencies": {
-    "@rdm/prettier-config": "^1.0.1",
+    "@rdm/prettier-config": "^2.0.0",
     "agadoo": "^2.0.0",
     "documentation": "^13.1.1",
-    "microbundle": "^0.13.0",
-    "prettier": "^2.2.1"
+    "microbundle": "^0.14.2",
+    "playwright": "^1.17.1",
+    "prettier": "^2.5.1",
+    "sirv": "^2.0.0",
+    "uvu": "^0.5.2"
   },
   "prettier": "@rdm/prettier-config",
   "mangle": {

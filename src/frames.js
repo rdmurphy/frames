@@ -1,22 +1,5 @@
 // internal
-import { AMP_SENTINEL, EMBED_SIZE } from './constants.mjs';
-import { extend } from './utils.mjs';
-
-/**
- * A wrapper around postMessage to normalize the message body. Automatically
- * includes the AMP sentinel value.
- *
- * @private
- * @param {string} type Type of message being sent
- * @param {Object} [data] Any additional data to send
- * @returns {void}
- */
-function sendMessage(type, data = {}) {
-  window.parent.postMessage(
-    extend({ sentinel: AMP_SENTINEL, type }, data),
-    '*'
-  );
-}
+import { AMP_SENTINEL, EMBED_SIZE, INITIAL_MESSAGE } from './constants.js';
 
 /**
  * Gets the height of the current document's body. Uses offsetHeight to ensure
@@ -26,7 +9,7 @@ function sendMessage(type, data = {}) {
  * @returns {number}
  */
 function getDocumentHeight() {
-  return document.documentElement.offsetHeight;
+	return document.documentElement.offsetHeight;
 }
 
 /**
@@ -45,7 +28,10 @@ function getDocumentHeight() {
  *
  */
 function sendFrameHeight(height = getDocumentHeight()) {
-  sendMessage(EMBED_SIZE, { height });
+	window.parent.postMessage(
+		{ sentinel: AMP_SENTINEL, type: EMBED_SIZE, height },
+		'*',
+	);
 }
 
 /**
@@ -59,11 +45,15 @@ function sendFrameHeight(height = getDocumentHeight()) {
  * sendHeightOnLoad();
  */
 function sendHeightOnLoad() {
-  window.addEventListener('load', function cb() {
-    sendFrameHeight();
+	window.addEventListener(
+		'load',
+		function load() {
+			sendFrameHeight();
 
-    window.removeEventListener('load', cb);
-  });
+			window.removeEventListener('load', load, false);
+		},
+		false,
+	);
 }
 
 /**
@@ -77,7 +67,38 @@ function sendHeightOnLoad() {
  * sendHeightOnResize();
  */
 function sendHeightOnResize() {
-  window.addEventListener('resize', () => sendFrameHeight());
+	window.addEventListener('resize', () => sendFrameHeight(), false);
+}
+
+/**
+ * Sets up an event listener for a message from the parent window that it is
+ * now listening for messages from this iframe, and tells it the iframe's height
+ * at that time. This makes it possible to delay observing an iframe (e.g. when
+ * lazy loading) but trust the parent will get the current height ASAP.
+ *
+ * @returns {void}
+ * @example
+ *
+ * // as soon as a Framer connects, tell the host page what the current height is
+ * sendHeightOnFramerInit();
+ */
+function sendHeightOnFramerInit() {
+	window.addEventListener(
+		'message',
+		function onInit(event) {
+			const { data } = event;
+
+			// if the sentinel and type matches, update our height
+			if (data.sentinel === AMP_SENTINEL && data.type === INITIAL_MESSAGE) {
+				// don't need it anymore
+				window.removeEventListener('message', onInit, false);
+
+				// send the current frame height
+				sendFrameHeight();
+			}
+		},
+		false,
+	);
 }
 
 /**
@@ -94,13 +115,14 @@ function sendHeightOnResize() {
  * sendHeightOnPoll(150);
  */
 function sendHeightOnPoll(delay = 300) {
-  setInterval(sendFrameHeight, delay);
+	setInterval(sendFrameHeight, delay);
 }
 
 /**
  * A helper for running the standard functions for setting up a frame.
  *
- * Automatically calls an sendFrameHeight, sendHeightOnLoad and sendHeightOnResize.
+ * Automatically calls an `sendFrameHeight`, `sendHeightOnLoad`, `sendHeightOnResize`
+ * and `sendHeightOnFramerInit`.
  *
  * @returns {void}
  * @example
@@ -108,13 +130,14 @@ function sendHeightOnPoll(delay = 300) {
  * initFrame();
  */
 function initFrame() {
-  sendFrameHeight();
-  sendHeightOnLoad();
-  sendHeightOnResize();
+	sendFrameHeight();
+	sendHeightOnLoad();
+	sendHeightOnResize();
+	sendHeightOnFramerInit();
 }
 
 /**
- * Initializes a frame, then sets up a poll to continue to update on an interval.
+ * Calls `initFrame` to setup a frame, then initializes a poller to continue to update on an interval.
  *
  * @param {number} [delay] An optional custom delay to pass to sendHeightOnPoll
  * @returns {void}
@@ -124,15 +147,16 @@ function initFrame() {
  * initFrameAndPoll();
  */
 function initFrameAndPoll(delay) {
-  initFrame();
-  sendHeightOnPoll(delay);
+	initFrame();
+	sendHeightOnPoll(delay);
 }
 
 export {
-  initFrame,
-  initFrameAndPoll,
-  sendFrameHeight,
-  sendHeightOnLoad,
-  sendHeightOnPoll,
-  sendHeightOnResize,
+	initFrame,
+	initFrameAndPoll,
+	sendFrameHeight,
+	sendHeightOnLoad,
+	sendHeightOnPoll,
+	sendHeightOnResize,
+	sendHeightOnFramerInit,
 };
