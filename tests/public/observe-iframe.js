@@ -1,3 +1,3 @@
 import { observeIframe } from '/index.js';
 
-observeIframe(document.querySelector('iframe'));
+window.unobserve = observeIframe(document.querySelector('iframe'));

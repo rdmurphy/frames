@@ -62,7 +62,7 @@ export function observeIframe(iframe) {
  *
  * @param {Element} container the containing DOM element for the iframe
  * @param {FramerOptions} options
- * @returns {() => void}
+ * @returns {{remove: () => void}}
  */
 export function Framer(container, { attributes, src } = {}) {
 	// create the iframe
@@ -94,8 +94,10 @@ export function Framer(container, { attributes, src } = {}) {
 	// append it to the container
 	container.appendChild(iframe);
 
-	return function remove() {
-		unobserve();
-		container.removeChild(iframe);
+	return {
+		remove() {
+			unobserve();
+			container.removeChild(iframe);
+		},
 	};
 }
