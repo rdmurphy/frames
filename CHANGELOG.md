@@ -32,6 +32,8 @@ As the example shows above, you can _also_ now disable the observer using the `u
 
 `sendHeightOnFramerInit` has been added to both `initFrame` and `initFrameAndPoll`.
 
+- `@newswire/frames` now has legacy support for [Pym.js](http://blog.apps.npr.org/pym.js/) child frames. This means you can now use `@newswire/frames` to resize iframes that have been built with Pym.js. However - `@newswire/frames` only recognizes Pym.js' `height` events. All other events **will be ignored**.
+
 ### Changed
 
 - `Framer` still exists but its interface has changed. Because the `container` was never optional it is now the first expected parameter when creating a new instance. The second paremter is now an object with two optional properties - `src` and `attributes`. `src` does what you expect and sets the `src` attribute on the iframe, but the `attributes` object is the new way to configure any other attributes on the `iframe` that's created. It's now just a convienient way to loop over an object and call `setAttribute`.

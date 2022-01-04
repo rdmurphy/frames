@@ -2,7 +2,7 @@
   "name": "@newswire/frames",
   "type": "module",
   "version": "0.3.1",
-  "description": "A greenfield take on responsive iframes in the spirit of Pym.js.",
+  "description": "A minimalistic take on responsive iframes in the spirit of Pym.js.",
   "source": "src/index.js",
   "main": "dist/frames.cjs",
   "exports": "./dist/frames.modern.js",
