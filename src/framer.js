@@ -16,7 +16,7 @@ import { AMP_SENTINEL, EMBED_SIZE, INITIAL_MESSAGE } from './constants.js';
  * // returns a `unobserve()` function if you need to stop listening
  * const unobserve = observeIframe(iframe);
  *
- * // later, if you need to remove the listener
+ * // later, if you need to disconnect from the iframe
  * unobserve();
  */
 export function observeIframe(iframe) {

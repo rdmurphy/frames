@@ -3,7 +3,6 @@
 </h1>
 <p align="center">
   <a href="https://www.npmjs.org/package/@newswire/frames"><img src="https://badgen.net/npm/v/@newswire/frames" alt="npm"></a>
-  <a href="https://david-dm.org/rdmurphy/frames"><img src="https://badgen.net/david/dep/rdmurphy/frames" alt="dependencies"></a>
   <a href="https://unpkg.com/@newswire/frames/dist/index.umd.js"><img src="https://badgen.net/badgesize/gzip/https://unpkg.com/@newswire/frames/dist/index.umd.js" alt="gzip size"></a>
   <a href="https://unpkg.com/@newswire/frames/dist/index.umd.js"><img src="https://badgen.net/badgesize/brotli/https://unpkg.com/@newswire/frames/dist/index.umd.js" alt="brotli size"></a>
   <a href="https://packagephobia.now.sh/result?p=@newswire/frames"><img src="https://badgen.net/packagephobia/install/@newswire/frames" alt="install size"></a>
@@ -78,7 +77,7 @@ const framer = new Framer({ container, src });
 // Now the iframe has been added to the page and is listening for height changes notifications from within the iframe
 ```
 
-A popular feature of Pym.js was the ability to automatically initialize embeds that had matching attibutes on their container elements. `@newswire/frames` also includes this capability.
+A popular feature of Pym.js was the ability to automatically initialize embeds that had matching attibutes on their container elements — `@newswire/frames` can do this as well.
 
 Assume we have the following markup in our HTML:
 
@@ -118,6 +117,7 @@ import { initFrame } from '@newswire/frames';
 // 1. Sends the initial frame's content height
 // 2. Sets up an one-time istener to send the height on load
 // 3. Sets up a listener to send the height every time the frame resizes
+// 4. Sets up an event listener that notifieds the parent window once it's ready
 initFrame();
 ```
 
@@ -129,7 +129,8 @@ import { initFrameAndPoll } from '@newswire/frames';
 // 1. Sends the initial frame's content height
 // 2. Sets up an one-time listener to send the height on load
 // 3. Sets up a listener to send the height every time the frame resizes
-// 4. Sets up an interval to send a new height update every 300ms
+// 4. Sets up an event listener that notifieds the parent window once it's ready
+// 5. Sets up an interval to send a new height update every 300ms
 initFrameAndPoll();
 ```
 
@@ -141,6 +142,7 @@ import {
 	sendHeightOnLoad,
 	sendHeightOnResize,
 	sendHeightOnPoll,
+	sendHeightOnFramerInit,
 } from '@newswire/frames';
 
 // 1. Sends the initial frame's content height
@@ -152,10 +154,13 @@ sendHeightOnLoad();
 // 3. Sets up a listener to send the height every time the frame resizes
 sendHeightOnResize();
 
-// 4. Sets up an interval to send a new height update every 150ms
+// 4. Sets up an event listener that notifieds the parent window once it's ready
+sendHeightOnFramerInit();
+
+// 5. Sets up an interval to send a new height update every 150ms
 sendHeightOnPoll(150);
 
-// 1-3 is identical to initFrame()! 1-4 is identical to initFrameAndPoll()!
+// 1-4 is identical to initFrame()! 1-5 is identical to initFrameAndPoll()!
 ```
 
 Typically using `initFrame()` will be enough, but if you have code that will potentially change the height of the frame's content (like with an `<input>` or `<button>` press) and would rather not use polling, you can use `sendFrameHeight()` to manually recalculate and send an update to the parent page.
@@ -175,7 +180,6 @@ Typically using `initFrame()` will be enough, but if you have code that will pot
   - [Parameters](#parameters-1)
 - [autoInitFrames](#autoinitframes)
   - [Examples](#examples-1)
-- [attrs](#attrs)
 - [sendFrameHeight](#sendframeheight)
   - [Parameters](#parameters-2)
   - [Examples](#examples-2)
@@ -214,7 +218,7 @@ const iframe = document.getElementById('my-embed');
 // returns a `unobserve()` function if you need to stop listening
 const unobserve = observeIframe(iframe);
 
-// later, if you need to remove the listener
+// later, if you need to disconnect from the iframe
 unobserve();
 ```
 
@@ -239,7 +243,8 @@ disconnecting the event listener and removing the iframe from the DOM.
 #### Parameters
 
 - `container` **[Element](https://developer.mozilla.org/docs/Web/API/Element)** the containing DOM element for the iframe
-- `options` **[FramerOptions](#frameroptions)**
+- `options` **[FramerOptions](#frameroptions)** (optional, default `{}`)
+
   - `options.attributes`
   - `options.src`
 
@@ -254,8 +259,6 @@ auto-activated.
 // sets up all frames that have not been initialized yet
 autoInitFrames();
 ```
-
-### attrs
 
 ### sendFrameHeight
 
@@ -359,7 +362,7 @@ Returns **void**
 
 ### initFrameAndPoll
 
-Initializes a frame, then sets up a poll to continue to update on an interval.
+Calls `initFrame` to setup a frame, then initializes a poller to continue to update on an interval.
 
 #### Parameters
 

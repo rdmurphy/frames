@@ -22,7 +22,10 @@ const prefixLength = FRAME_ATTRIBUTE_PREFIX.length;
  */
 function getMatchingAttributes(element) {
 	// prepare the object to return
-	/** @type {{[key: string]: string }} */
+	/**
+	 * @private
+	 * @type {{[key: string]: string }}
+	 */
 	const attrs = {};
 
 	// grab all the attributes off the element

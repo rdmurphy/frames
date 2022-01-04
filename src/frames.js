@@ -137,7 +137,7 @@ function initFrame() {
 }
 
 /**
- * Initializes a frame, then sets up a poll to continue to update on an interval.
+ * Calls `initFrame` to setup a frame, then initializes a poller to continue to update on an interval.
  *
  * @param {number} [delay] An optional custom delay to pass to sendHeightOnPoll
  * @returns {void}
