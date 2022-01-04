@@ -318,6 +318,51 @@ framer.run();
 
 const auto = suite('auto');
 
-auto('autoInitFrames()', async () => {});
+auto.before(before);
+auto.after(after);
+
+auto('autoInitFrames()', async () => {
+	// go to the page for auto loading
+	await page.goto('http://localhost:3000/auto.html');
+
+	// locate the three containers
+	const containers = page.locator('[data-frame-src]');
+
+	// locate the iframes
+	const iframes = page.locator('iframe');
+
+	// assert they're all there
+	assert.equal(await containers.count(), 3);
+	// but no iframes yet
+	assert.equal(await iframes.count(), 0);
+
+	// inject the auto load code, wait for the three to update
+	await Promise.all([
+		page.addScriptTag({ url: '/init-auto.js', type: 'module' }),
+		page.waitForFunction(() => {
+			return new Promise((resolve) => {
+				let count = 0;
+				window.addEventListener('message', () => {
+					count++;
+
+					if (count === 3) {
+						resolve();
+					}
+				});
+			});
+		}),
+	]);
+
+	// now we have iframes
+	assert.equal(await iframes.count(), 3);
+
+	// make sure they all have the right heights
+	for (const iframe of await iframes.elementHandles()) {
+		assert.equal((await iframe.boundingBox()).height, 300);
+	}
+
+	// make sure that the attribute matcher works
+	assert.equal(await iframes.nth(2).getAttribute('data-id'), '3');
+});
 
 auto.run();

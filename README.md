@@ -72,12 +72,28 @@ import { Framer } from '@newswire/frames';
 
 const container = document.getElementById('embed-container');
 const src = 'https://i-am-an-embed/';
+const attributes = { sandbox: 'allow-scripts allow-same-origin' };
 
-const framer = new Framer({ container, src });
+const framer = new Framer(container, { src, atttributes });
 // Now the iframe has been added to the page and is listening for height changes notifications from within the iframe
 ```
 
-A popular feature of Pym.js was the ability to automatically initialize embeds that had matching attibutes on their container elements — `@newswire/frames` can do this as well.
+It is also possible to observe existing iframes on a page if the content of the frames are compatible with `@newswire/frames`. This is handy if you already have your own method to dynamically add iframes to the page, or are using a custom method to lazy load them and don't need the heavy hand of `Framer`.
+
+```js
+import { observeIframe } from '@newswire/frames';
+
+// grab a reference to an existing iframe
+const iframe = document.getElementById('my-embed');
+
+// returns a `unobserve()` function if you need to stop listening
+const unobserve = observeIframe(iframe);
+
+// later, if you need to disconnect from the iframe
+unobserve();
+```
+
+Pym.js had the ability to automatically initialize embeds that had matching attibutes on their container elements — `@newswire/frames` can do this as well.
 
 Assume we have the following markup in our HTML:
 
@@ -96,13 +112,17 @@ import { autoInitFrames } from '@newswire/frames';
 autoInitFrames();
 ```
 
-If you're needing to pass any of the other options to `Framer` when you're automatically creating the embeds, you can add matching data attributes that the initializer will pick up and pass along.
+If you're needing to pass any of the other options to `Framer` when you're automatically creating the embeds, you can add attributes that the initializer will pick up and pass along using the `data-frame-attribute-*` prefix.
 
 ```html
 <div
 	data-frame-src="https://i-am-an-embed/"
-	data-frame-sandbox="allow-scripts allow-same-origin"
+	data-frame-attribute-sandbox="allow-scripts allow-same-origin"
 ></div>
+
+<!-- This creates... -->
+<iframe src="https://i-am-an-embed/" sandbox="allow-scripts allow-same-origin">
+</iframe>
 ```
 
 ### From the **embedded** page (_frame_ or _child_)
@@ -117,7 +137,7 @@ import { initFrame } from '@newswire/frames';
 // 1. Sends the initial frame's content height
 // 2. Sets up an one-time istener to send the height on load
 // 3. Sets up a listener to send the height every time the frame resizes
-// 4. Sets up an event listener that notifieds the parent window once it's ready
+// 4. Sets up an event listener that sends the height once the parent window begins watching
 initFrame();
 ```
 
@@ -129,7 +149,7 @@ import { initFrameAndPoll } from '@newswire/frames';
 // 1. Sends the initial frame's content height
 // 2. Sets up an one-time listener to send the height on load
 // 3. Sets up a listener to send the height every time the frame resizes
-// 4. Sets up an event listener that notifieds the parent window once it's ready
+// 4. Sets up an event listener that sends the height once the parent window begins watching
 // 5. Sets up an interval to send a new height update every 300ms
 initFrameAndPoll();
 ```
@@ -154,7 +174,7 @@ sendHeightOnLoad();
 // 3. Sets up a listener to send the height every time the frame resizes
 sendHeightOnResize();
 
-// 4. Sets up an event listener that notifieds the parent window once it's ready
+// 4. Sets up an event listener that sends the height once the parent window begins watching
 sendHeightOnFramerInit();
 
 // 5. Sets up an interval to send a new height update every 150ms
