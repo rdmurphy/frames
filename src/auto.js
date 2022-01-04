@@ -18,13 +18,13 @@ const prefixLength = FRAME_ATTRIBUTE_PREFIX.length;
  *
  * @private
  * @param  {Element} element
- * @return {{[key: string]: string }}
+ * @return {Record<string, string>}
  */
 function getMatchingAttributes(element) {
 	// prepare the object to return
 	/**
 	 * @private
-	 * @type {{[key: string]: string }}
+	 * @type {Record<string, string>}
 	 */
 	const attrs = {};
 

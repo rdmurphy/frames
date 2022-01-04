@@ -52,7 +52,7 @@ export function observeIframe(iframe) {
 /**
  * @typedef {object} FramerOptions
  * @property {string | null} [src] the URL to set as the `src` of the iframe
- * @property {{[key: string]: string }} [attributes] any attributes to add to the iframe itself
+ * @property {Record<string, string>} [attributes] any attributes to add to the iframe itself
  */
 
 /**

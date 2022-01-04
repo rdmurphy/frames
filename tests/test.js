@@ -315,3 +315,9 @@ framer('Framer()', async () => {
 });
 
 framer.run();
+
+const auto = suite('auto');
+
+auto('autoInitFrames()', async () => {});
+
+auto.run();

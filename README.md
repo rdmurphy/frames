@@ -233,6 +233,7 @@ Type: [object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 #### Properties
 
 - `src` **([string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | null)?** the URL to set as the `src` of the iframe
+- `attributes` **Record<[string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String), [string](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>?** any attributes to add to the iframe itself
 
 ### Framer
 
