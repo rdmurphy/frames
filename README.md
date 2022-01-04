@@ -8,7 +8,7 @@
   <a href="https://packagephobia.now.sh/result?p=@newswire/frames"><img src="https://badgen.net/packagephobia/install/@newswire/frames" alt="install size"></a>
 </p>
 
-`@newswire/frames` is a [greenfield](https://en.wikipedia.org/wiki/Greenfield_project) take on responsive iframes in the spirit of [Pym.js](http://blog.apps.npr.org/pym.js/).
+`@newswire/frames` is a minimalistic take on responsive iframes in the spirit of [Pym.js](http://blog.apps.npr.org/pym.js/).
 
 ## Key features
 

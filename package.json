@@ -4,7 +4,7 @@
   "version": "0.3.1",
   "description": "A greenfield take on responsive iframes in the spirit of Pym.js.",
   "source": "src/index.js",
-  "main": "dist/frames.js",
+  "main": "dist/frames.cjs",
   "exports": "./dist/frames.modern.js",
   "module": "dist/frames.module.js",
   "unpkg": "dist/frames.umd.js",
