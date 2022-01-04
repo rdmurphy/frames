@@ -260,7 +260,7 @@ framer('framer.observeIframe()', async () => {
 	assert.equal((await iframe.boundingBox()).height, 450);
 });
 
-framer('Framer()', async () => {
+framer('framer.Framer()', async () => {
 	// prep for the eventual iframe on the page
 	const iframe = page.locator('#iframe-container > iframe');
 
@@ -276,8 +276,6 @@ framer('Framer()', async () => {
 
 	// assert Framer set the width
 	assert.equal(await iframe.getAttribute('width'), '100%');
-	// assert Framer set scrolling
-	assert.equal(await iframe.getAttribute('scrolling'), 'no');
 	// assert Framer set scrolling
 	assert.equal(await iframe.getAttribute('scrolling'), 'no');
 	// assert Framer set marginheight
