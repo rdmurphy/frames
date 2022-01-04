@@ -38,7 +38,7 @@ As the example shows above, you can _also_ now disable the observer using the `u
 
 ### Changed
 
-- `Framer` still exists but its interface has changed. Because the `container` was never optional it is now the first expected parameter when creating a new instance. The second paremter is now an object with two optional properties - `src` and `attributes`. `src` does what you expect and sets the `src` attribute on the iframe, but the `attributes` object is the new way to configure any other attributes on the `iframe` that's created. It's now just a convienient way to loop over an object and call `setAttribute`.
+- `Framer` still exists but its interface has changed. Because the `container` was never optional it is now the first expected parameter when creating a new instance. The second parameter is now an object with two optional properties - `src` and `attributes`. `src` does what you expect and sets the `src` attribute on the iframe, but the `attributes` object is the new way to configure any other attributes on the `iframe` that's created. It's now just a convienient way to loop over an object and call `setAttribute`.
 
 Why the change? The most common request to this library has been to add additional attributes that `Framer` can apply to the iframe it creates. (Or the ability to _not_ set one, [like `src`](https://github.com/rdmurphy/frames/pull/6)!) Instead of having to add support to `Framer` for every attribute you want to set on the iframe, it's now just a matter of adding a new property to the `attributes` object.
 
