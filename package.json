@@ -36,14 +36,14 @@
   },
   "homepage": "https://github.com/rdmurphy/frames#readme",
   "devDependencies": {
-    "@rdm/prettier-config": "^1.0.1",
+    "@rdm/prettier-config": "^2.0.0",
     "agadoo": "^2.0.0",
     "documentation": "^13.1.1",
-    "microbundle": "^0.13.0",
-    "playwright": "^1.12.3",
-    "prettier": "^2.2.1",
-    "sirv": "^1.0.11",
-    "uvu": "^0.5.1"
+    "microbundle": "^0.14.2",
+    "playwright": "^1.17.1",
+    "prettier": "^2.5.1",
+    "sirv": "^2.0.0",
+    "uvu": "^0.5.2"
   },
   "prettier": "@rdm/prettier-config",
   "mangle": {
