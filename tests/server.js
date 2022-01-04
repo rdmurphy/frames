@@ -6,13 +6,13 @@ import { fileURLToPath } from 'node:url';
 import sirv from 'sirv';
 
 export function createServer() {
-	const dist = sirv(fileURLToPath(new URL('../dist', import.meta.url)), {
+	const src = sirv(fileURLToPath(new URL('../src', import.meta.url)), {
 		dev: true,
 	});
 	const examples = sirv(fileURLToPath(new URL('./public', import.meta.url)), {
 		dev: true,
 	});
-	const wares = [dist, examples];
+	const wares = [src, examples];
 
 	const server = http
 		.createServer(function requestListener(req, res) {

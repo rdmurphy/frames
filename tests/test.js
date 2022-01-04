@@ -7,7 +7,7 @@ import { suite } from 'uvu';
 
 // library
 import { createServer } from './server.js';
-import * as frames from '@newswire/frames';
+import * as frames from '../src/index.js';
 
 const browserName = process.env.BROWSER || 'chromium';
 
@@ -44,31 +44,143 @@ features.before(async () => {
 	server = createServer();
 });
 
+features.before.each(async () => {
+	await page.goto('http://localhost:3000/');
+});
+
 features.after(async () => {
 	await page.close();
 	await browser.close();
 	server.close();
 });
 
-features('frames', async () => {
-	await page.goto('http://localhost:3000/');
-	const title = await page.title();
-	assert.equal(title, 'Document');
+features('sendFrameHeight()', async () => {
+	// get iframe on page
+	const iframe = page.locator('iframe');
+	// assert initial height is 150
+	assert.equal((await iframe.boundingBox()).height, 150);
+	// inject the frame observer code
+	await page.addScriptTag({ url: '/observe-iframe.js', type: 'module' });
+	// set the src on the iframe and wait for it to load
+	await iframe.evaluate((iframe) => {
+		iframe.src = '/send-frame-height.html';
 
-	const iframe = await page.waitForSelector('iframe');
-	const frame = await iframe.contentFrame();
-	const box = await iframe.boundingBox();
+		return new Promise((resolve) => {
+			iframe.onload = resolve;
+		});
+	});
+	// assert the iframe now has the new height of 300
+	assert.equal((await iframe.boundingBox()).height, 300);
+});
 
-	// before activating
-	assert.equal(box.height, 150);
+features('sendHeightOnLoad()', async () => {
+	// get iframe on page
+	const iframe = page.locator('iframe');
+	// assert initial height is 150
+	assert.equal((await iframe.boundingBox()).height, 150);
+	// inject the frame observer code
+	await page.addScriptTag({ url: '/observe-iframe.js', type: 'module' });
+	// set the src on the iframe and wait for it to load
+	await iframe.evaluate((iframe) => {
+		iframe.src = '/send-height-on-load.html';
 
-	await page.addScriptTag({ url: '/embed.js', type: 'module' });
+		return new Promise((resolve) => {
+			iframe.onload = resolve;
+		});
+	});
+	// assert the iframe now has the new height of 300
+	assert.equal((await iframe.boundingBox()).height, 300);
+});
 
-	// after activating
-	assert.equal(
-		await frame.evaluate(() => document.documentElement.clientHeight),
-		(await iframe.boundingBox()).height,
-	);
+features('sendHeightOnPoll()', async () => {
+	// get iframe on page
+	const iframe = page.locator('iframe');
+	// assert initial height is 150
+	assert.equal((await iframe.boundingBox()).height, 150);
+	// inject the frame observer code
+	await page.addScriptTag({ url: '/observe-iframe.js', type: 'module' });
+	// set the src on the iframe and wait for it to load, then wait for that
+	// first poll to land
+	await Promise.all([
+		iframe.evaluate((iframe) => {
+			iframe.src = '/send-height-on-poll.html';
+
+			return new Promise((resolve) => {
+				iframe.onload = resolve;
+			});
+		}),
+		page.waitForFunction(() => {
+			return new Promise((resolve) => {
+				window.addEventListener('message', resolve);
+			});
+		}),
+	]);
+
+	// assert the iframe now has the new height of 300
+	assert.equal((await iframe.boundingBox()).height, 300);
+});
+
+features('sendHeightOnResize()', async () => {
+	// get iframe on page
+	const iframe = page.locator('iframe');
+	// assert initial height is 150
+	assert.equal((await iframe.boundingBox()).height, 150);
+	// inject the frame observer code
+	await page.addScriptTag({ url: '/observe-iframe.js', type: 'module' });
+	// set the src on the iframe and wait for it to load
+	await iframe.evaluate((iframe) => {
+		iframe.src = '/send-height-on-resize.html';
+
+		return new Promise((resolve) => {
+			iframe.onload = resolve;
+		});
+	});
+
+	// change the width of the iframe to trigger a resize
+	await Promise.all([
+		iframe.evaluate((iframe) => {
+			iframe.style.width = '400px';
+		}),
+		page.waitForFunction(() => {
+			return new Promise((resolve) => {
+				window.addEventListener('message', resolve);
+			});
+		}),
+	]);
+
+	// assert the iframe now has the new height of 300
+	assert.equal((await iframe.boundingBox()).height, 300);
+});
+
+features('sendHeightOnFramerInit()', async () => {
+	// get iframe on page
+	const iframe = page.locator('iframe');
+	// assert initial height is 150
+	assert.equal((await iframe.boundingBox()).height, 150);
+
+	// we do this in reverse — the trigger is the *observer* connecting!
+
+	// set the src on the iframe and wait for it to load
+	await iframe.evaluate((iframe) => {
+		iframe.src = '/send-height-on-framer-init.html';
+
+		return new Promise((resolve) => {
+			iframe.onload = resolve;
+		});
+	});
+
+	// inject the frame observer code
+	await Promise.all([
+		page.addScriptTag({ url: '/observe-iframe.js', type: 'module' }),
+		page.waitForFunction(() => {
+			return new Promise((resolve) => {
+				window.addEventListener('message', resolve);
+			});
+		}),
+	]);
+
+	// assert the iframe now has the new height of 300
+	assert.equal((await iframe.boundingBox()).height, 300);
 });
 
 features.run();
