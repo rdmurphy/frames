@@ -75,7 +75,7 @@ const container = document.getElementById('embed-container');
 const src = 'https://i-am-an-embed/';
 const attributes = { sandbox: 'allow-scripts allow-same-origin' };
 
-const framer = new Framer(container, { src, atttributes });
+const framer = new Framer(container, { src, attributes });
 // Now the iframe has been added to the page and is listening for height changes notifications from within the iframe
 ```
 
