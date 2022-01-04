@@ -27,9 +27,6 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install-deps ${{ matrix.browser }}
 
-      - name: Build the library
-        run: npm run build --if-present
-
       - name: Run tests
         run: npm test
         env:
