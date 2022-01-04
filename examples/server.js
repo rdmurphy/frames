@@ -4,9 +4,20 @@ import { createServer } from 'node:http';
 // packages
 import sirv from 'sirv';
 
-const dist = sirv('./dist', { dev: true });
+const dist = sirv('./src', { dev: true });
 const examples = sirv('./examples', { dev: true });
-const wares = [dist, examples];
+const wares = [
+	(req, res, next) => {
+		// so AMP will shut up
+		if (req.url.endsWith('.js')) {
+			res.setHeader('Access-Control-Allow-Origin', 'null');
+		}
+
+		next();
+	},
+	dist,
+	examples,
+];
 
 createServer(function requestListener(req, res) {
 	let index = 0;
