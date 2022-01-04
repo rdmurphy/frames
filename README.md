@@ -242,10 +242,6 @@ const unobserve = observeIframe(iframe);
 unobserve();
 ```
 
-###
-
-Type: [MessageEvent](https://developer.mozilla.org/docs/Web/API/MessageEvent)
-
 ### FramerOptions
 
 Type: [object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)

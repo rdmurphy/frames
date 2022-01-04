@@ -20,7 +20,12 @@ import { AMP_SENTINEL, EMBED_SIZE, INITIAL_MESSAGE } from './constants.js';
  * unobserve();
  */
 export function observeIframe(iframe) {
-	function processMessage(/** @type {MessageEvent} */ event) {
+	/**
+	 * @private
+	 * @param {MessageEvent} event
+	 * @returns {void}
+	 */
+	function processMessage(event) {
 		// this message isn't from our created frame, stop here
 		if (event.source !== iframe.contentWindow) {
 			return;
