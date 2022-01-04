@@ -3,6 +3,7 @@
 </h1>
 <p align="center">
   <a href="https://www.npmjs.org/package/@newswire/frames"><img src="https://badgen.net/npm/v/@newswire/frames" alt="npm"></a>
+  <a href="https://github.com/rdmurphy/frames/actions/workflows/ci.yaml"><img src="https://github.com/rdmurphy/frames/actions/workflows/ci.yaml/badge.svg" alt="ci"></a>
   <a href="https://unpkg.com/@newswire/frames/dist/index.umd.js"><img src="https://badgen.net/badgesize/gzip/https://unpkg.com/@newswire/frames/dist/index.umd.js" alt="gzip size"></a>
   <a href="https://unpkg.com/@newswire/frames/dist/index.umd.js"><img src="https://badgen.net/badgesize/brotli/https://unpkg.com/@newswire/frames/dist/index.umd.js" alt="brotli size"></a>
   <a href="https://packagephobia.now.sh/result?p=@newswire/frames"><img src="https://badgen.net/packagephobia/install/@newswire/frames" alt="install size"></a>
@@ -12,10 +13,11 @@
 
 ## Key features
 
-- 🐜 **1 kilobyte** gzipped for both parent and frame code
-- 🌴 **Tree-shakable** by default - import only what you need to achieve responsiveness
+- 🐜 **<1 kilobyte** gzipped for both parent and frame code
+- 🌴 **Tree-shakable** - import only what you need for your use case
 - ⚡️ **Speaks [AMP](https://www.ampproject.org)** and is compatible with [`amp-iframe`](https://www.ampproject.org/docs/reference/components/amp-iframe)
 - 🕰 **Legacy [Pym.js](http://blog.apps.npr.org/pym.js/) support** - recognizes `height` updates from Pym.js iframes
+- 🧪 **Fully tested** in Safari, Chrome and Firefox with [Playwright](https://playwright.dev)
 
 ## Supported browsers
 
