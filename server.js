@@ -1,5 +1,5 @@
 // native
-import { createServer } from 'http';
+import { createServer } from 'node:http';
 
 // packages
 import sirv from 'sirv';

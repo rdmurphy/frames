@@ -1,5 +1,5 @@
 // native
-import { strict as assert } from 'assert';
+import { strict as assert } from 'node:assert';
 
 // packages
 import { chromium, firefox, webkit } from 'playwright';

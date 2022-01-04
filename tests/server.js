@@ -1,6 +1,6 @@
 // native
-import http from 'http';
-import { fileURLToPath } from 'url';
+import http from 'node:http';
+import { fileURLToPath } from 'node:url';
 
 // packages
 import sirv from 'sirv';
