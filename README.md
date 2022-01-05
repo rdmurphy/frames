@@ -4,8 +4,8 @@
 <p align="center">
   <a href="https://www.npmjs.org/package/@newswire/frames"><img src="https://badgen.net/npm/v/@newswire/frames" alt="npm"></a>
   <a href="https://github.com/rdmurphy/frames/actions/workflows/ci.yaml"><img src="https://github.com/rdmurphy/frames/actions/workflows/ci.yaml/badge.svg" alt="ci"></a>
-  <a href="https://unpkg.com/@newswire/frames@1.0.0/dist/frames.umd.js"><img src="https://badgen.net/badgesize/gzip/https://unpkg.com/@newswire/frames@1.0.0/dist/frames.umd.js" alt="gzip size"></a>
-  <a href="https://unpkg.com/@newswire/frames@1.0.0/dist/frames.umd.js"><img src="https://badgen.net/badgesize/brotli/https://unpkg.com/@newswire/frames@1.0.0/dist/frames.umd.js" alt="brotli size"></a>
+  <a href="https://unpkg.com/@newswire/frames/dist/frames.umd.js"><img src="https://badgen.net/badgesize/gzip/https://unpkg.com/@newswire/frames/dist/frames.umd.js" alt="gzip size"></a>
+  <a href="https://unpkg.com/@newswire/frames/dist/frames.umd.js"><img src="https://badgen.net/badgesize/brotli/https://unpkg.com/@newswire/frames/dist/frames.umd.js" alt="brotli size"></a>
   <a href="https://packagephobia.now.sh/result?p=@newswire/frames"><img src="https://badgen.net/packagephobia/install/@newswire/frames" alt="install size"></a>
 </p>
 
@@ -42,7 +42,7 @@ npm install @newswire/frames
 You can also use it directly via [unpkg.com](https://unpkg.com/).
 
 ```html
-<script src="https://unpkg.com/@newswire/frames/dist/index.umd.js"></script>
+<script src="https://unpkg.com/@newswire/frames/dist/frames.umd.js"></script>
 <!-- Now available at `window.newswireFrames` -->
 ```
 
